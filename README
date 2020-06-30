@@ -1,5 +1,8 @@
 This is not an officially supported Google product.
 
+This is also not officially supported by or otherwise affiliated with
+Overdrive, Hoopla, the Internet Archive, or Project Gutenberg.
+
 This program takes a list of books, and tries to find libraries where you could
 immediately check them out. It knows how to interpret Overdrive/Libby, Hoopla
 as surfaced by the Minuteman Library Network, the Internet Archive's Open
