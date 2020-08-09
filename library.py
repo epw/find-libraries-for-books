@@ -306,7 +306,7 @@ def open_library(title, author):
   for doc in r.json()["docs"]:
 #    if doc["title"].lower() == title.lower() and [True for a in doc.get("author_name", []) if a.lower() == author]:
     if doc["title"].lower() == title.lower():
-      if doc["availability"]["status"] == "borrow_available":
+      if "availability" in doc and doc["availability"]["status"] == "borrow_available":
         return True
   return False
 
