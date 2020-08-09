@@ -1,0 +1,11 @@
+h1 {
+    text-align: center;
+}
+
+label > div {
+    margin-bottom: 4px;
+}
+
+textarea {
+    margin-bottom: 4px;
+}

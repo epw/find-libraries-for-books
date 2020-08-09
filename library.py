@@ -348,21 +348,30 @@ def find_book(full_title, author):
   return data
 
 
+def wrong_shelf(row):
+  if "Bookshelves" in row:
+    shelves = map(str.strip, row["Bookshelves"].split(","))
+    return "to-read" not in shelves
+
+
+
+def found_book(book):
+  return book.get("hoopla") or book.get("overdrive") or book.get("openlibrary") or book.get("gutenberg")
+
+
 def library(goodreads_csv):
   """Print JSON for which books from the filename are immediately available to take out at a library."""
   with open(goodreads_csv) as f:
     reader = csv.DictReader(f)
     items = []
     for row in reader:
-      if "Bookshelves" in row:
-        shelves = map(str.strip, row["Bookshelves"].split(","))
-        if "to-read" not in shelves:
-          continue
+      if wrong_shelf(row):
+        continue
       sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
       book = find_book(row["Title"], row["Author"])
-      if book.get("hoopla") or book.get("overdrive") or book.get("openlibrary") or book.get("gutenberg"):
+      if found_book(book):
         items.append(book)
-    json.dump(items, sys.stdout)
+    return items
 
 
 def usage(prog):
@@ -373,7 +382,7 @@ def main():
   if len(sys.argv) < 2:
     usage(sys.argv[0])
     exit()
-  library(sys.argv[1])
+  json.dump(library(sys.argv[1]), sys.stdout)
   print()
   
 

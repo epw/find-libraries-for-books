@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <h1>Find Libraries for Books</h1>
+    <form method="POST" action="find.cgi">
+      <label>
+	<div>List books here, in the form <code>Title,Author</code>
+	  (or copy in a full CSV)</div>
+	<textarea name="books" rows="6" cols="40"></textarea>
+      </label>
+      <div><input type="submit" value="Submit"></div>
+    </form>
+  </body>
+</html>
