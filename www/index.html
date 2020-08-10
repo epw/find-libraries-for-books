@@ -10,10 +10,21 @@
     <form method="POST" action="find.cgi">
       <label>
 	<div>List books here, in the form <code>Title,Author</code>
-	  (or copy in a full CSV)</div>
+	  (or copy in a full CSV from a <a href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads export</a>)</div>
 	<textarea name="books" rows="6" cols="40"></textarea>
       </label>
-      <div><input type="submit" value="Submit"></div>
+      <div>
+	<p>Warning: May be very slow for large numbers of books.</p>
+	<input type="submit" value="Submit">
+      </div>
     </form>
+    <div>
+      <h3>About</h3>
+      <p>
+	The source code for this site is at <a href="https://github.com/epw/find-libraries-for-books">https://github.com/epw/find-libraries-for-books</a>.
+      </p>
+      <p>
+      </p>
+    </div>
   </body>
 </html>
