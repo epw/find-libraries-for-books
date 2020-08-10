@@ -9,3 +9,9 @@ label > div {
 textarea {
     margin-bottom: 4px;
 }
+
+td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+

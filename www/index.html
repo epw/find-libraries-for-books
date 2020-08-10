@@ -9,8 +9,18 @@
     <h1>Find Libraries for Books</h1>
     <form method="POST" action="find.cgi">
       <label>
-	<div>List books here, in the form <code>Title,Author</code>
-	  (or copy in a full CSV from a <a href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads export</a>)</div>
+	<div>
+	  <p>
+	    This website allows you to check one or more books against
+	    several library networks' ebook lending. It only tells you
+	    about books from your list that you could borrow
+	    immediately, with no wait.
+	  </p>
+	  <p>List books here, in the form <code>Title,Author</code>
+	  (or copy in a full CSV from a <a
+	    href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
+	    export</a>)</p>
+	  </div>
 	<textarea name="books" rows="6" cols="40"></textarea>
       </label>
       <div>
@@ -24,6 +34,11 @@
 	The source code for this site is at <a href="https://github.com/epw/find-libraries-for-books">https://github.com/epw/find-libraries-for-books</a>.
       </p>
       <p>
+	This site just barely does the minimum the author requires of
+	it. There are a lot of improvements that will hopefully be
+	added if the author has time, such as selection of which
+	Overdrive and Hoopla library networks to query, and links to
+	the particular book records when they are found.
       </p>
     </div>
   </body>

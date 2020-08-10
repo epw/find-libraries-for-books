@@ -4,6 +4,7 @@ import cgi, cgitb
 cgitb.enable()
 
 import csv
+import json
 import library
 
 
@@ -28,23 +29,31 @@ def lookup_books(books):
   return items
 
 
-def make_row(book):
+def assemble_book(book):
   other = list(set(["openlibrary", "gutenberg"]) & set(book))
   if other:
     other = other[0]
   else:
     other = ""
+  return {"title": book.get("title", ""),
+          "author": book.get("author", ""),
+          "overdrive": book.get("overdrive", ""),
+          "hoopla": book.get("hoopla", ""),
+          "other": other}
+
+
+def make_row(book):
   return """<tr>
   <td>{title}</td>
   <td>{author}</td>
   <td>{overdrive}</td>
   <td>{hoopla}</td>
   <td>{other}</td>
-</tr>""".format(title=book.get("title", ""),
-                author=book.get("author", ""),
-                overdrive=book.get("overdrive", ""),
-                hoopla=book.get("hoopla", ""),
-                other=other)
+</tr>""".format(title=book["title"],
+                author=book["author"],
+                overdrive=book["overdrive"],
+                hoopla=book["hoopla"],
+                other=book["other"])
 
 
 def page(books):
@@ -52,13 +61,16 @@ def page(books):
 
   book_data = lookup_books(books)
 
+  embedded = []
   rows = []
   for book in book_data:
-    rows.append(make_row(book))
+    assembled = assemble_book(book)
+    embedded.append(assembled)
+    rows.append(make_row(assembled))
   rows = "\n".join(rows)
   
   with open("books.template.html") as f:
-    print(f.read().format(rows=rows))
+    print(f.read().format(rows=rows, books_json=json.dumps(embedded)))
 
 
 def main():
