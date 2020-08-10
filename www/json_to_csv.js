@@ -4,7 +4,13 @@ function convert_to_csv(colnames, array) {
     for (let el of array) {
 	let line = [];
 	for (let col of colnames) {
-	    line.push(el[col]);
+	    if (typeof(el[col]) == "string" && (
+		el[col].indexOf(",") != -1
+		    || el[col].indexOf("\n") != -1)) {
+		line.push('"' + el[col] + '"');
+	    } else {
+		line.push(el[col]);
+	    }
 	}
 	str.push(line.join(","));
     }
