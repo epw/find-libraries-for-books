@@ -1,3 +1,5 @@
-- Add support for choosing library networks for Overdrive and Hoopla
-- Surface that support in Web interface
+- Make Overdrive subdomain selection nicer (remember choices, use checkboxes)
+- Support CSV uploads, not just copied-in text
+- Explain input format better
 - Parallelize lookups (but don't DoS any APIs)
+- Add support for choosing library networks for Hoopla
