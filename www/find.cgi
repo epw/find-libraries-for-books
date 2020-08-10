@@ -8,7 +8,7 @@ import json
 import library
 
 
-def lookup_books(books):
+def lookup_books(books, overdrive):
   lines = books.split("\n")
   if lines[0].find("Title") != -1 and lines[0].find("Author") != -1:
     reader = csv.DictReader(lines)
@@ -19,11 +19,14 @@ def lookup_books(books):
     if library.wrong_shelf(row):
       continue
     if "Title" in row:
-      book = library.find_book(row["Title"], row["Author"])
+      title = row["Title"]
+      author = row["Author"]
     else:
       if not row:
         continue
-      book = library.find_book(row[0], row[1])
+      title = row[0]
+      author = row[1]
+    book = library.find_book(title, author, overdrive)
     if library.found_book(book):
       items.append(book)
   return items
@@ -56,10 +59,15 @@ def make_row(book):
                 other=book["other"])
 
 
-def page(books):
+def page(books, overdrive):
   print("Content-Type: text/html\n")
 
-  book_data = lookup_books(books)
+  if overdrive:
+    overdrive = overdrive.split(",")
+  else:
+    overdrive = library.OVERDRIVE_SUBDOMAINS
+
+  book_data = lookup_books(books, overdrive)
 
   embedded = []
   rows = []
@@ -75,7 +83,7 @@ def page(books):
 
 def main():
   params = cgi.FieldStorage()
-  page(params.getfirst("books", ""))
+  page(params.getfirst("books", ""), params.getfirst("overdrive"))
 
 
 if __name__ == "__main__":

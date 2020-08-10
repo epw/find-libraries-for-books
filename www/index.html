@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <title>Find Libraries for Books</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
@@ -16,13 +17,17 @@
 	    about books from your list that you could borrow
 	    immediately, with no wait.
 	  </p>
-	  <p>List books here, in the form <code>Title,Author</code>
-	  (or copy in a full CSV from a <a
+	  <p>List books here, in the form <code>Title, Author</code>,
+	    with authors written as "Firstname Lastname", (or copy in a
+	    full CSV from a <a
 	    href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
 	    export</a>)</p>
 	  </div>
 	<textarea name="books" rows="6" cols="40"></textarea>
       </label>
+      <div>
+	<label>Overdrive subdomains: <input name="overdrive" value="minuteman,bpl"></label>
+      </div>
       <div>
 	<p>Warning: May be very slow for large numbers of books.</p>
 	<input type="submit" value="Submit">

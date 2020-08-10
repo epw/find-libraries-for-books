@@ -311,7 +311,7 @@ def open_library(title, author):
   return False
 
 
-def find_book(full_title, author):
+def find_book(full_title, author, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
   """For each book, look it up in Minuteman for Hoopla, and in various Overdrive feeds.
 
   Also looks at Open Library and Gutenberg.
@@ -332,7 +332,7 @@ def find_book(full_title, author):
   except requests.exceptions.HTTPError as e:
     sys.stderr.write(str(e))
   overdrive_place = None
-  for subdomain in OVERDRIVE_SUBDOMAINS:
+  for subdomain in overdrive_subdomains:
     try:
       overdrive_lookup = overdrive(subdomain, overdrive_title(title_parts), author)
       if overdrive_lookup["available"]:
@@ -354,13 +354,17 @@ def wrong_shelf(row):
     return "to-read" not in shelves
 
 
-
 def found_book(book):
-  return book.get("hoopla") or book.get("overdrive") or book.get("openlibrary") or book.get("gutenberg")
+  return (book.get("hoopla")
+          or book.get("overdrive")
+          or book.get("openlibrary")
+          or book.get("gutenberg"))
 
 
-def library(goodreads_csv):
+def library(goodreads_csv, overdrive_subdomains):
   """Print JSON for which books from the filename are immediately available to take out at a library."""
+  if not overdrive_subdomains:
+    overdrive_subdomains = OVERDRIVE_SUBDOMAINS
   with open(goodreads_csv) as f:
     reader = csv.DictReader(f)
     items = []
@@ -368,7 +372,7 @@ def library(goodreads_csv):
       if wrong_shelf(row):
         continue
       sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
-      book = find_book(row["Title"], row["Author"])
+      book = find_book(row["Title"], row["Author"], overdrive_subdomains)
       if found_book(book):
         items.append(book)
     return items
@@ -382,7 +386,11 @@ def main():
   if len(sys.argv) < 2:
     usage(sys.argv[0])
     exit()
-  json.dump(library(sys.argv[1]), sys.stdout)
+  csvfile = sys.argv[1]
+  overdrive_subdomains = None
+  if len(sys.argv) > 2:
+    overdrive_subdomains = sys.argv[2].split(",")
+  json.dump(library(csvfile, overdrive_subdomains), sys.stdout)
   print()
   
 
