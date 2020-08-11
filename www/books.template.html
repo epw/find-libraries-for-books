@@ -1,15 +1,17 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Find Libraries for Books | Results</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
-    <script src="json_to_csv.js"></script>
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <h1>Find Libraries for Books</h1>
-    <div>
+
+<head>
+  <title>Find Libraries for Books | Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="json_to_csv.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <h1>Find Libraries for Books</h1>
+  <div>
     <p>
       In the Overdrive column, you will be told the network that has
       the book available.
@@ -19,29 +21,29 @@
       the Somerville Public Library's account).
     </p>
     <p>
-      The Other column indicates if the book was found in <a
-      href="https://openlibrary.org">Open Library</a> or <a
-      href="https://gutenberg.org">Project Gutenberg</a>.
+      The Other column indicates if the book was found in <a href="https://openlibrary.org">Open Library</a> or <a
+        href="https://gutenberg.org">Project Gutenberg</a>.
     </p>
-    </div>
-    <table border="1">
-      <tr>
-	<th>Title</th>
-	<th>Author</th>
-	<th>Overdrive</th>
-	<th>Hoopla</th>
-	<th>Other</th>
-      </tr>
-{rows}
-    </table>
-    <script>
-const books_json = {books_json};
-    </script>
-    <p>
-      <button onclick="download_books()">Download table as CSV</button>
-    </p>
-    <p>
-      <a href="index.html">New Search</a>
-    </p>
-  </body>
+  </div>
+  <table border="1">
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Overdrive</th>
+      <th>Hoopla</th>
+      <th>Other</th>
+    </tr>
+    {rows}
+  </table>
+  <script>
+    const books_json = { books_json };
+  </script>
+  <p>
+    <button onclick="download_books()">Download table as CSV</button>
+  </p>
+  <p>
+    <a href="index.html">New Search</a>
+  </p>
+</body>
+
 </html>

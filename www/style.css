@@ -15,19 +15,19 @@
  */
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 label > div {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 textarea {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 td {
-    padding-left: 2px;
-    padding-right: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 

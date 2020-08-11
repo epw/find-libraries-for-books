@@ -13,8 +13,8 @@
 // limitations under the License.
 
 function download_books() {
-    download_csv_file(["title", "author", "overdrive", "hoopla", "other"],
-		      books_json, "table.csv");
+  download_csv_file(["title", "author", "overdrive", "hoopla", "other"],
+    books_json, "table.csv");
 }
 
 function init() {
