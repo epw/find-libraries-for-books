@@ -112,12 +112,12 @@ def split_title(title):
 def gutenberg_match(work, title, author):
   """Fuzzy match of title and author, if provided, looking for each given word in the record."""
   for word in split_title(title):
-    if work[0].find(word.lower()) == -1:
+    if not work[0] or work[0].find(word.lower()) == -1:
       return False
   if not author:
     return work
   for word in split_title(author):
-    if work[1].find(word.lower()) == -1:
+    if not work[1] or work[1].find(word.lower()) == -1:
       return False
   return work
 
@@ -363,19 +363,16 @@ def found_book(book):
 
 def library(goodreads_csv, overdrive_subdomains):
   """Print JSON for which books from the filename are immediately available to take out at a library."""
-  if not overdrive_subdomains:
-    overdrive_subdomains = OVERDRIVE_SUBDOMAINS
-  with open(goodreads_csv) as f:
-    reader = csv.DictReader(f)
-    items = []
-    for row in reader:
-      if wrong_shelf(row):
-        continue
-      sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
-      book = find_book(row["Title"], row["Author"], overdrive_subdomains)
-      if found_book(book):
-        items.append(book)
-    return items
+  reader = csv.DictReader(goodreads_csv)
+  items = []
+  for row in reader:
+    if wrong_shelf(row):
+      continue
+    sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
+    book = find_book(row["Title"], row["Author"], overdrive_subdomains)
+    if found_book(book):
+      items.append(book)
+  return items
 
 
 def usage(prog):
@@ -383,14 +380,18 @@ def usage(prog):
 
 
 def main():
+  overdrive_subdomains = OVERDRIVE_SUBDOMAINS
+  def inner(f):
+    json.dump(library(f, overdrive_subdomains), sys.stdout)
+
   if len(sys.argv) < 2:
-    usage(sys.argv[0])
-    exit()
-  csvfile = sys.argv[1]
-  overdrive_subdomains = None
-  if len(sys.argv) > 2:
-    overdrive_subdomains = sys.argv[2].split(",")
-  json.dump(library(csvfile, overdrive_subdomains), sys.stdout)
+    inner(sys.stdin)
+  else:
+    if len(sys.argv) > 2:
+      overdrive_subdomains = sys.argv[2].split(",")
+    with open(sys.argv[1]) as f:
+      inner(f)
+
   print()
   
 
