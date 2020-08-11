@@ -17,12 +17,36 @@
 	    about books from your list that you could borrow
 	    immediately, with no wait.
 	  </p>
-	  <p>List books here, in the form <code>Title, Author</code>,
-	    with authors written as "Firstname Lastname", (or copy in a
-	    full CSV from a <a
+	  <p>
+	    The problem it is trying to solve is that if you have a
+	    number of books you want to read, and you don't care which
+	    one you read next, but you want to start reading right
+	    now, then you're out of luck. You have to check each book
+	    against each possible library in turn, until you find one
+	    (or give up and buy one online, which is almost always
+	    easy and available, but costs money instead of making use
+	    of your library).
+	  </p>
+	  <p>
+	    Put the books you're looking for here. One per line, with
+	    the title, a comma, and the author's first and last
+	    names. If there are commas in the title, then wrap the
+	    title in quotation marks. For example:
+	    <ul>
+	      <li>"Frankenstein; Or, The Modern Prometheus", Mary
+		Shelley</li>
+	    </ul>
+	    Using just a part of the title or author's name may work
+	    (such as just their last name), however, it increases the
+	    chance that the system will misidentify the book and so
+	    say the wrong one is present.
+	  </p>
+	  <p>
+	    You can also copy in the full CSV from a <a
 	    href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
-	    export</a>)</p>
-	  </div>
+	    export</a>.
+	  </p>
+	</div>
 	<textarea name="books" rows="6" cols="40"></textarea>
       </label>
       <div>
