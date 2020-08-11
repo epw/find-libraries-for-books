@@ -379,22 +379,22 @@ def usage(prog):
   print("Usage: {} goodreads.csv")
 
 
-def main():
+def main(argv):
   overdrive_subdomains = OVERDRIVE_SUBDOMAINS
   def inner(f):
     json.dump(library(f, overdrive_subdomains), sys.stdout)
 
-  if len(sys.argv) < 2:
+  if len(argv) < 2:
     inner(sys.stdin)
   else:
-    if len(sys.argv) > 2:
-      overdrive_subdomains = sys.argv[2].split(",")
-    with open(sys.argv[1]) as f:
+    if len(argv) > 2:
+      overdrive_subdomains = argv[2].split(",")
+    with open(argv[1]) as f:
       inner(f)
 
   print()
   
 
 if __name__ == "__main__":
-  main()
+  main(sys.argv)
   
