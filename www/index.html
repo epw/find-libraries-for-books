@@ -15,75 +15,79 @@
   limitations under the License.
 -->
 <html>
-  <head>
-    <title>Find Libraries for Books</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <h1>Find Libraries for Books</h1>
-    <form method="POST" action="find.cgi">
-      <label>
-	<div>
-	  <p>
-	    This website allows you to check one or more books against
-	    several library networks' ebook lending. It only tells you
-	    about books from your list that you could borrow
-	    immediately, with no wait.
-	  </p>
-	  <p>
-	    The problem it is trying to solve is that if you have a
-	    number of books you want to read, and you don't care which
-	    one you read next, but you want to start reading right
-	    now, then you're out of luck. You have to check each book
-	    against each possible library in turn, until you find one
-	    (or give up and buy one online, which is almost always
-	    easy and available, but costs money instead of making use
-	    of your library).
-	  </p>
-	  <p>
-	    Put the books you're looking for here. One per line, with
-	    the title, a comma, and the author's first and last
-	    names. If there are commas in the title, then wrap the
-	    title in quotation marks. For example:
-	    <ul>
-	      <li>"Frankenstein; Or, The Modern Prometheus", Mary
-		Shelley</li>
-	    </ul>
-	    Using just a part of the title or author's name may work
-	    (such as just their last name), however, it increases the
-	    chance that the system will misidentify the book and so
-	    say the wrong one is present.
-	  </p>
-	  <p>
-	    You can also copy in the full CSV from a <a
-	    href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
-	    export</a>.
-	  </p>
-	</div>
-	<textarea name="books" rows="6" cols="40"></textarea>
-      </label>
+
+<head>
+  <title>Find Libraries for Books</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <h1>Find Libraries for Books</h1>
+  <form method="POST" action="find.cgi">
+    <label>
       <div>
-	<label>Overdrive subdomains: <input name="overdrive" value="minuteman,bpl"></label>
+        <p>
+          This website allows you to check one or more books against
+          several library networks' ebook lending. It only tells you
+          about books from your list that you could borrow
+          immediately, with no wait.
+        </p>
+        <p>
+          The problem it is trying to solve is that if you have a
+          number of books you want to read, and you don't care which
+          one you read next, but you want to start reading right
+          now, then you're out of luck. You have to check each book
+          against each possible library in turn, until you find one
+          (or give up and buy one online, which is almost always
+          easy and available, but costs money instead of making use
+          of your library).
+        </p>
+        <p>
+          Put the books you're looking for here. One per line, with
+          the title, a comma, and the author's first and last
+          names. If there are commas in the title, then wrap the
+          title in quotation marks. For example:
+        <ul>
+          <li>"Frankenstein; Or, The Modern Prometheus", Mary
+            Shelley</li>
+        </ul>
+        Using just a part of the title or author's name may work
+        (such as just their last name), however, it increases the
+        chance that the system will misidentify the book and so
+        say the wrong one is present.
+        </p>
+        <p>
+          You can also copy in the full CSV from a <a
+            href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
+            export</a>.
+        </p>
       </div>
-      <div>
-	<p>Warning: May be very slow for large numbers of books.</p>
-	<input type="submit" value="Submit">
-      </div>
-    </form>
+      <textarea name="books" rows="6" cols="40"></textarea>
+    </label>
     <div>
-      <h3>About</h3>
-      <p>
-	The source code for this site is at <a href="https://github.com/epw/find-libraries-for-books">https://github.com/epw/find-libraries-for-books</a>.
-      </p>
-      <p>
-	This site just barely does the minimum the author requires of
-	it. There are a lot of improvements that will hopefully be
-	added if the author has time, such as selection of which
-	Overdrive and Hoopla library networks to query, and links to
-	the particular book records when they are found.
-      </p>
+      <label>Overdrive subdomains: <input name="overdrive" value="minuteman,bpl"></label>
     </div>
-  </body>
+    <div>
+      <p>Warning: May be very slow for large numbers of books.</p>
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+  <div>
+    <h3>About</h3>
+    <p>
+      The source code for this site is at <a
+        href="https://github.com/epw/find-libraries-for-books">https://github.com/epw/find-libraries-for-books</a>.
+    </p>
+    <p>
+      This site just barely does the minimum the author requires of
+      it. There are a lot of improvements that will hopefully be
+      added if the author has time, such as selection of which
+      Overdrive and Hoopla library networks to query, and links to
+      the particular book records when they are found.
+    </p>
+  </div>
+</body>
+
 </html>
