@@ -19,15 +19,24 @@ cgitb.enable()
 
 import csv
 import json
+import io
 import library
 
 
-def lookup_books(books, overdrive):
-  lines = books.split("\n")
-  if lines[0].find("Title") != -1 and lines[0].find("Author") != -1:
-    reader = csv.DictReader(lines)
+def lookup_books(books, csvfile, overdrive):
+  if csvfile is not None and csvfile.filename:
+    # In Python 2, I could have just said csv.DictReader(csvfile.file)
+    # But because Python 3 has the wrong idea about unicode, I have to
+    # read the whole thing and convert to a string and wrap in io.StringIO
+    # Hopefully the CSV won't be too big. Thanks, Python.
+    string = csvfile.file.read().decode("utf8")
+    reader = csv.DictReader(io.StringIO(string))
   else:
-    reader = csv.reader(lines)
+    lines = books.split("\n")
+    if lines[0].find("Title") != -1 and lines[0].find("Author") != -1:
+      reader = csv.DictReader(lines)
+    else:
+      reader = csv.reader(lines)
   items = []
   for row in reader:
     if library.wrong_shelf(row):
@@ -43,6 +52,8 @@ def lookup_books(books, overdrive):
     book = library.find_book(title, author, overdrive)
     if library.found_book(book):
       items.append(book)
+  if csvfile is not None and csvfile.filename:
+    items += lookup_books(books, None, overdrive)
   return items
 
 
@@ -73,7 +84,7 @@ def make_row(book):
                 other=book["other"])
 
 
-def page(books, overdrive):
+def page(books, csvfile, overdrive):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -81,7 +92,7 @@ def page(books, overdrive):
   else:
     overdrive = library.OVERDRIVE_SUBDOMAINS
 
-  book_data = lookup_books(books, overdrive)
+  book_data = lookup_books(books, csvfile, overdrive)
 
   embedded = []
   rows = []
@@ -90,14 +101,14 @@ def page(books, overdrive):
     embedded.append(assembled)
     rows.append(make_row(assembled))
   rows = "\n".join(rows)
-  
+
   with open("books.template.html") as f:
     print(f.read().format(rows=rows, books_json=json.dumps(embedded)))
 
 
 def main():
   params = cgi.FieldStorage()
-  page(params.getfirst("books", ""), params.getfirst("overdrive"))
+  page(params.getfirst("books", ""), params["csvfile"], params.getfirst("overdrive"))
 
 
 if __name__ == "__main__":

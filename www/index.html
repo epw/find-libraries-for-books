@@ -25,7 +25,7 @@
 
 <body>
   <h1>Find Libraries for Books</h1>
-  <form method="POST" action="find.cgi">
+  <form method="POST" action="find.cgi" enctype="multipart/form-data">
     <label>
       <div>
         <p>
@@ -61,7 +61,7 @@
         <p>
           You can also copy in the full CSV from a <a
             href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
-            export</a>.
+            export</a>, or upload one: <input type="file" name="csvfile">
         </p>
       </div>
       <textarea name="books" rows="6" cols="40"></textarea>
