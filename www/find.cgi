@@ -22,7 +22,6 @@ import json
 import io
 import library
 
-
 def lookup_books(books, csvfile, overdrive):
   if csvfile is not None and csvfile.filename:
     # In Python 2, I could have just said csv.DictReader(csvfile.file)
@@ -84,7 +83,11 @@ def make_row(book):
                 other=book["other"])
 
 
-def page(books, csvfile, overdrive):
+def escape_filename(filename):
+  return "".join(c for c in filename if c.isalnum() or c in (".", "_", "-"))
+
+
+def page(books, csvfile, overdrive, renderonly=False):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -92,7 +95,12 @@ def page(books, csvfile, overdrive):
   else:
     overdrive = library.OVERDRIVE_SUBDOMAINS
 
-  book_data = lookup_books(books, csvfile, overdrive)
+  if renderonly:
+    books = escape_filename(books)
+    with open(books) as f:
+      book_data = json.load(f)
+  else:
+    book_data = lookup_books(books, csvfile, overdrive)
 
   embedded = []
   rows = []
@@ -100,15 +108,17 @@ def page(books, csvfile, overdrive):
     assembled = assemble_book(book)
     embedded.append(assembled)
     rows.append(make_row(assembled))
+  count = len(rows)
   rows = "\n".join(rows)
 
   with open("books.template.html") as f:
-    print(f.read().format(rows=rows, books_json=json.dumps(embedded)))
+    print(f.read().format(count=count, rows=rows, books_json=json.dumps(embedded)))
 
 
 def main():
   params = cgi.FieldStorage()
-  page(params.getfirst("books", ""), params["csvfile"], params.getfirst("overdrive"))
+  csvfile = params["csvfile"] if "csvfile" in params else None
+  page(params.getfirst("books", ""), None, params.getfirst("overdrive"), params.getfirst("renderonly"))
 
 
 if __name__ == "__main__":
