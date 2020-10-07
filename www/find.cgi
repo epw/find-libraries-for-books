@@ -83,11 +83,7 @@ def make_row(book):
                 other=book["other"])
 
 
-def escape_filename(filename):
-  return "".join(c for c in filename if c.isalnum() or c in (".", "_", "-"))
-
-
-def page(books, csvfile, overdrive, renderonly=False):
+def page(books, csvfile, overdrive, daily=False):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -95,8 +91,7 @@ def page(books, csvfile, overdrive, renderonly=False):
   else:
     overdrive = library.OVERDRIVE_SUBDOMAINS
 
-  if renderonly:
-    books = escape_filename(books)
+  if daily:
     with open(books) as f:
       book_data = json.load(f)
   else:
@@ -118,7 +113,10 @@ def page(books, csvfile, overdrive, renderonly=False):
 def main():
   params = cgi.FieldStorage()
   csvfile = params["csvfile"] if "csvfile" in params else None
-  page(params.getfirst("books", ""), None, params.getfirst("overdrive"), params.getfirst("renderonly"))
+  books = params.getfirst("books", "")
+  if params.getfirst("daily"):
+    books = "available_books.json" # Set to filename for daily dump from ../cron.sh
+  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"))
 
 
 if __name__ == "__main__":
