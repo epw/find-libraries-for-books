@@ -24,8 +24,7 @@ import os
 import shutil
 import sys
 
-
-DB = "hidden_books.json"
+from values import DB
 
 def hide_book(title, author):
   db = []

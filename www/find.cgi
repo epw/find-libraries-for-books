@@ -21,6 +21,9 @@ import csv
 import json
 import io
 import library
+import os
+
+from values import DB
 
 def lookup_books(books, csvfile, overdrive):
   if csvfile is not None and csvfile.filename:
@@ -98,17 +101,37 @@ def page(books, csvfile, overdrive, daily=False):
   else:
     book_data = lookup_books(books, csvfile, overdrive)
 
+  db = {}
+  try:
+    if os.path.exists(DB):
+      with open(DB) as f:
+        db = json.load(f)
+  except:
+    raise
+  
   embedded = []
   rows = []
+  hidden_count = 0
   for book in book_data:
     assembled = assemble_book(book)
+    hidden_book = False
+    for hidden in db:
+      if hidden["title"] == assembled["title"] and hidden["author"] == assembled["author"]:
+        hidden_count += 1
+        hidden_book = True
+        break
+    if hidden_book:
+      break
     embedded.append(assembled)
     rows.append(make_row(assembled))
   count = len(rows)
   rows = "\n".join(rows)
 
   with open("books.template.html") as f:
-    print(f.read().format(count=count, rows=rows, books_json=json.dumps(embedded)))
+    print(f.read().format(count=count,
+                          rows=rows,
+                          books_json=json.dumps(embedded),
+                          hidden=hidden_count))
 
 
 def main():
