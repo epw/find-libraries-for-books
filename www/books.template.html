@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
   <script src="json_to_csv.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js" async defer></script>
 </head>
 
 <body>
@@ -41,8 +41,10 @@
     </p>
   </div>
   <div>{count} books found.</div>
+  <div id="errors"></div>
   <table border="1">
     <tr>
+      <th>Hide</th>
       <th>Title</th>
       <th>Author</th>
       <th>Overdrive</th>

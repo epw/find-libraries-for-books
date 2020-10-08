@@ -71,11 +71,12 @@ def assemble_book(book):
 
 def make_row(book):
   return """<tr>
-  <td>{title}</td>
-  <td>{author}</td>
-  <td>{overdrive}</td>
-  <td>{hoopla}</td>
-  <td>{other}</td>
+  <td class="hide"><span>X</span></td>
+  <td class="title">{title}</td>
+  <td class="author">{author}</td>
+  <td class="overdrive">{overdrive}</td>
+  <td class="hoopla">{hoopla}</td>
+  <td class="other">{other}</td>
 </tr>""".format(title=book["title"],
                 author=book["author"],
                 overdrive=book["overdrive"],
