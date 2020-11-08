@@ -290,6 +290,42 @@ def minuteman(title, author):
   return data
 
 
+def somervilleeast(title, author):
+  """Look for physical books available in the Somerville Library East branch."""
+  # This query string was derived from an advantaced search at https://find.minlib.net/iii/encore/home?lang=eng&suite=cobalt&advancedSearch=true
+  # with a title and author, with format BOOK, location Somerville, collection SOMERVILLE/EAST
+  query_str = urllib.parse.quote("C__St:({title}) a:({author}) f:a c:32 b:so2__Orightresult__U".format(
+    title=title,
+    author=author))
+  r = requests.get("https://find.minlib.net/iii/encore/search/" + query_str,
+                   params={"lang": "eng", "suite": "cobalt", "fromMain": "yes"})
+  r.raise_for_status()
+  soup = BeautifulSoup(r.text, "html.parser")
+  data = {"somerville/east": False}
+  for el in soup.find_all("div", class_="searchResult"):
+    item_type = el.select("div.recordDetailValue > span.itemMediaDescription")[0].string.strip()
+    if item_type == "BOOK":
+#      items_container = el.select("div.ItemsContainer")
+      table = el.select("div.bibHoldingsWrapper table.itemTable")
+      for row in table[0]("tr"):
+        tds = list(row("td"))
+        if not tds:
+          continue
+        print(tds[0])
+        if tds[0].string.strip().startswith("SOMERVILLE/EAST"):
+          if tds[2].chilren[0].string.strip() == "Available":
+            data["somerville/east"] = "Available"
+            break
+
+#      availability_message = items_container[0].select_one("span.availabilityMessage")
+#      print(availability_message.string.strip())
+#      if (availability_message.select("span.itemsAvailable")[0].string.strip() == "Available"
+#         and availability_message.string.strip()
+#      availability = el.select("div.ItemsContainer span.itemsAvailable")[0].string.strip()
+#      data["somerville/east"] = availability
+  return data
+
+
 # The Internet Archive's Open Library is easy, with a documented JSON API.
 
 
@@ -348,6 +384,21 @@ def find_book(full_title, author, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
   return data
 
 
+def find_physical_book(full_title, author):
+  """For each book, look it up in the Somerville East branch."""
+  title_parts = extract_title(full_title)
+  data = {"title": full_title,
+          "author": author}
+  try:
+    lookup = somervilleeast(mln_title(title_parts), author)
+    if lookup["somerville/east"]:
+      data["somerville/east"] = lookup["somerville/east"]
+      return data
+  except requests.exceptions.HTTPError as e:
+    sys.stderr.write(str(e))
+  return data
+
+
 def wrong_shelf(row):
   if "Bookshelves" in row:
     shelves = map(str.strip, row["Bookshelves"].split(","))
@@ -375,6 +426,20 @@ def library(goodreads_csv, overdrive_subdomains):
   return items
 
 
+def physical_library(goodreads_csv):
+  """Print JSON for which books from the filename are immediately available to take out at a library."""
+  reader = csv.DictReader(goodreads_csv)
+  items = []
+  for row in reader:
+    if wrong_shelf(row):
+      continue
+    sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
+    book = find_physical_book(row["Title"], row["Author"])
+    if "somerville/east" in book:
+      items.append(book)
+  return items
+
+
 def usage(prog):
   print("Usage: {} goodreads.csv")
 
@@ -393,8 +458,7 @@ def main(argv):
       inner(f)
 
   print()
-  
+
 
 if __name__ == "__main__":
   main(sys.argv)
-  
