@@ -55,7 +55,12 @@ function book_events(tr) {
 }
   
 function init() {
-  Array.from(document.querySelectorAll("tr")).map(book_events);
+    const query_params = new URLSearchParams(location.search);
+    if (query_params.get("overdrive")) {
+	document.getElementById("overdrive").value = query_params.get("overdrive");
+    }
+
+    Array.from(document.querySelectorAll("tr")).map(book_events);
 }
 
 init();

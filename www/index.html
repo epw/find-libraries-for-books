@@ -20,7 +20,7 @@
   <title>Find Libraries for Books</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </head>
 
 <body>
@@ -89,10 +89,11 @@
 	  column and books that are only available through it.
 	</p>
       </div>
+      <h3>Books</h3>
       <textarea name="books" rows="6" cols="40"></textarea>
     </label>
     <div>
-      <label>Overdrive subdomains: <input name="overdrive" value="minuteman,bpl"></label>
+      <label>Overdrive subdomains: <input id="overdrive" name="overdrive" value="minuteman,bpl"></label>
     </div>
     <div>
       <p>Warning: May be very slow for large numbers of books.</p>
