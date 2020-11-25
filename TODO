@@ -2,4 +2,5 @@
 - Explain input format better
 - Parallelize lookups (but don't DoS any APIs)
 - Add support for choosing library networks for Hoopla
+  - Requires JavaScript, could use Headless Chrome (https://developers.google.com/web/updates/2017/04/headless-chrome) to fetch pages
 - Chunk and stream large lists, managed in JavaScript
