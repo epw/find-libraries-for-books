@@ -59,22 +59,25 @@ def lookup_books(books, csvfile, overdrive):
   return items
 
 
+def a_tag(url, text):
+  return "<a href='{}'>{}</a>".format(url, text)
+
 def assemble_overdrive(book):
   if "overdrive_url" in book:
-    return "<a href='{}'>{}</a>".format(book.get("overdrive_url"), book.get("overdrive", "ERROR"))
+    return a_tag(book.get("overdrive_url"), book.get("overdrive", "ERROR"))
   return book.get("overdrive", "")
 
 
 def assemble_hoopla(book):
   if "hoopla" in book:
     if book["hoopla"].startswith("http"):
-      return "<a href='{}'>{}</a>".format(book["hoopla"], "True")
+      return a_tag(book["hoopla"], "True")
   return book.get("hoopla", "")
 
 
 def assemble_other(book):
   if "gutenberg" in book:
-    return "<a href='https://www.gutenberg.org/ebooks/{}'>{}</a>".format(book["gutenberg"][2], "gutenberg")
+    return a_tag("https://www.gutenberg.org/ebooks/{}".format(book["gutenberg"][2]), "gutenberg")
   if "openlibrary" in book:
     return "openlibrary"
   return ""
