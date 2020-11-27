@@ -65,17 +65,20 @@ def assemble_overdrive(book):
   return book.get("overdrive", "")
 
 
+def assemble_other(book):
+  if "gutenberg" in book:
+    return "<a href='https://www.gutenberg.org/ebooks/{}'>{}</a>".format(book["gutenberg"][2], "gutenberg")
+  if "openlibrary" in book:
+    return "openlibrary"
+  return ""
+
+
 def assemble_book(book):
-  other = list(set(["openlibrary", "gutenberg"]) & set(book))
-  if other:
-    other = other[0]
-  else:
-    other = ""
   return {"title": book.get("title", ""),
           "author": book.get("author", ""),
           "overdrive": assemble_overdrive(book),
           "hoopla": book.get("hoopla", ""),
-          "other": other}
+          "other": assemble_other(book)}
 
 
 def make_row(book):
@@ -114,7 +117,7 @@ def page(books, csvfile, overdrive, daily=False):
         db = json.load(f)
   except:
     raise
-  
+
   embedded = []
   rows = []
   hidden_count = 0
