@@ -20,7 +20,7 @@
   <title>Find Libraries for Books</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </head>
 
 <body>
@@ -34,39 +34,66 @@
           about books from your list that you could borrow
           immediately, with no wait.
         </p>
-        <p>
-          The problem it is trying to solve is that if you have a
-          number of books you want to read, and you don't care which
-          one you read next, but you want to start reading right
-          now, then you're out of luck. You have to check each book
-          against each possible library in turn, until you find one
-          (or give up and buy one online, which is almost always
-          easy and available, but costs money instead of making use
-          of your library).
-        </p>
-        <p>
-          Put the books you're looking for here. One per line, with
-          the title, a comma, and the author's first and last
-          names. If there are commas in the title, then wrap the
-          title in quotation marks. For example:
-        <ul>
-          <li>"Description of a New World, Called The Blazing-World", Margaret Cavendish</li>
-        </ul>
-        Using just a part of the title or author's name may work
-        (such as just their last name), however, it increases the
-        chance that the system will misidentify the book and so
-        say the wrong one is present.
-        </p>
-        <p>
-          You can also copy in the full CSV from a <a
-            href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
-            export</a>, or upload one: <input type="file" name="csvfile">
-        </p>
+	<p>
+	  To use this, you'll need, at minimum, a library card for a
+	  library that uses <a href="https://libbyapp.com">Libby</a> (also
+	  called <a href="https://overdrive.com">Overdrive</a>) for lending
+	  ebooks. This is fairly common these days, so check and see for your
+	  own. If you live in Massachusetts, you can get an "eCard" from the
+	  Boston Public Library by going to <a
+	  href="https://apps.bpl.org/ecard">https://apps.bpl.org/ecard</a>,
+	  which will give you access to Libby.
+	</p>
+	<p>
+	  Next, you'll need to find out what address your library uses for
+	  Overdrive. It will look something like
+	  <code>bpl.overdrive.com</code>. Your library's website may tell you,
+	  or, you can go to <a
+	    href="https://overdrive.com/libraries">overdrive.com</a> and search
+	  for your library. Eventually it should take you to a page with a URL
+	  like <code>bpl.overdrive.com</code>. Remember the subdomain, the
+	  part before <code>.overdrive.com</code> (so "bpl" in this example).
+	</p>
+	<p>
+	  Put this subdomain into the "Overdrive subdomains" box on this
+	  page. If you are lucky enough to have more than one library card for
+	  different libraries that use it, then you can put them in,
+	  comma-separated.
+	</p>
+	<p>
+	  Now you can put the books you're looking for into the Books
+	  text box below. One per line, with the title, a comma, and
+	  the author's first and last names. If there are commas in
+	  the title, then wrap the title in quotation marks. For
+	  example:
+	  <ul>
+            <li>"Description of a New World, Called The Blazing-World", Margaret Cavendish</li>
+	  </ul>
+	  Using just a part of the title or author's name may work
+	  (such as just their last name), however, it increases the
+	  chance that the system will misidentify the book and so
+	  say the wrong one is present.
+	</p>
+	<p>
+	  You can also copy in the full CSV from a <a
+	  href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
+	  export</a>, or upload one: <input type="file" name="csvfile">
+	</p>
+	<p>
+	  As a final note, <a href="https://hoopladigital.com">Hoopla</a>
+	  is another service for lending ebooks, which works differently than
+	  Libby. I have not figured out how to add configuration for Hoopla,
+	  so, if you have a library card for a library in the Minuteman
+	  network that subscribes to Hoopla, then that column in the output
+	  will be accurate for you. For everyone else, sorry, ignore that
+	  column and books that are only available through it.
+	</p>
       </div>
+      <h3>Books</h3>
       <textarea name="books" rows="6" cols="40"></textarea>
     </label>
     <div>
-      <label>Overdrive subdomains: <input name="overdrive" value="minuteman,bpl"></label>
+      <label>Overdrive subdomains: <input id="overdrive" name="overdrive" value="minuteman,bpl"></label>
     </div>
     <div>
       <p>Warning: May be very slow for large numbers of books.</p>
@@ -76,6 +103,16 @@
   <div>
     <h3>About</h3>
     <p>
+      The problem it is trying to solve is that if you have a
+      number of books you want to read, and you don't care which
+      one you read next, but you want to start reading right
+      now, then you're out of luck. You have to check each book
+      against each possible library in turn, until you find one
+      (or give up and buy one online, which is almost always
+      easy and available, but costs money instead of making use
+      of your library).
+    </p>
+    <p>
       The source code for this site is at <a
         href="https://github.com/epw/find-libraries-for-books">https://github.com/epw/find-libraries-for-books</a>.
     </p>
@@ -83,8 +120,8 @@
       This site just barely does the minimum the author requires of
       it. There are a lot of improvements that will hopefully be
       added if the author has time, such as selection of which
-      Overdrive and Hoopla library networks to query, and links to
-      the particular book records when they are found.
+      Hoopla library networks to query, and links to the particular
+      book records when they are found.
     </p>
   </div>
 </body>

@@ -31,3 +31,12 @@ td {
   padding-right: 2px;
 }
 
+td.hide {
+    text-align: center;
+    color: #aaa;
+}
+
+#errors {
+    color: red;
+    margin: 10px 0;
+}
