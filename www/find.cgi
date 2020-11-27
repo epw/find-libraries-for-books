@@ -56,6 +56,12 @@ def lookup_books(books, csvfile, overdrive):
   return items
 
 
+def assemble_overdrive(book):
+  if "overdrive_url" in book:
+    return "<a href='{}'>{}</a>".format(book.get("overdrive_url"), book.get("overdrive", "ERROR"))
+  return book.get("overdrive", "")
+
+
 def assemble_book(book):
   other = list(set(["openlibrary", "gutenberg"]) & set(book))
   if other:
@@ -64,7 +70,7 @@ def assemble_book(book):
     other = ""
   return {"title": book.get("title", ""),
           "author": book.get("author", ""),
-          "overdrive": book.get("overdrive", ""),
+          "overdrive": assemble_overdrive(book),
           "hoopla": book.get("hoopla", ""),
           "other": other}
 
