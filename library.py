@@ -129,6 +129,7 @@ def gutenberg_lookup(gutindex, title, author):
     filtered_works = []
     for work in works:
       if word.lower() in work[0] or word.lower() in (work[1] or []):
+        print(title, author, work, [gutindex[work]])
         filtered_works.append(work)
     if len(filtered_works) == 0:
       return None
@@ -252,6 +253,7 @@ def overdrive(subdomain, title, author):
     item = media_items[key]
     if item["title"] == title and item["type"]["name"] == "eBook" and item["isAvailable"]:
       data["available"] = True
+      # This URL redirects to a specific one for your library if you are logged in.
       data["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
       break
   return data
