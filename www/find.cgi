@@ -65,6 +65,13 @@ def assemble_overdrive(book):
   return book.get("overdrive", "")
 
 
+def assemble_hoopla(book):
+  if "hoopla" in book:
+    if book["hoopla"].startswith("http"):
+      return "<a href='{}'>{}</a>".format(book["hoopla"], "True")
+  return book.get("hoopla", "")
+
+
 def assemble_other(book):
   if "gutenberg" in book:
     return "<a href='https://www.gutenberg.org/ebooks/{}'>{}</a>".format(book["gutenberg"][2], "gutenberg")
@@ -77,7 +84,7 @@ def assemble_book(book):
   return {"title": book.get("title", ""),
           "author": book.get("author", ""),
           "overdrive": assemble_overdrive(book),
-          "hoopla": book.get("hoopla", ""),
+          "hoopla": assemble_hoopla(book),
           "other": assemble_other(book)}
 
 
