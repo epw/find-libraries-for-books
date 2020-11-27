@@ -252,6 +252,7 @@ def overdrive(subdomain, title, author):
     item = media_items[key]
     if item["title"] == title and item["type"]["name"] == "eBook" and item["isAvailable"]:
       data["available"] = True
+      data["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
       break
   return data
 
@@ -374,6 +375,7 @@ def find_book(full_title, author, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
       if overdrive_lookup["available"]:
         overdrive_place = subdomain
         data["overdrive"] = overdrive_place
+        data["overdrive_url"] = overdrive_lookup["url"]
         return data
     except requests.exceptions.HTTPError as e:
       sys.stderr.write(str(e))
