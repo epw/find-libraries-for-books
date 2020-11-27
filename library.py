@@ -129,7 +129,6 @@ def gutenberg_lookup(gutindex, title, author):
     filtered_works = []
     for work in works:
       if word.lower() in work[0] or word.lower() in (work[1] or []):
-        print(title, author, work, [gutindex[work]])
         filtered_works.append(work)
     if len(filtered_works) == 0:
       return None
@@ -144,11 +143,15 @@ def gutenberg(title, author):
   """Download Project Gutenberg catalog and process it, then return the likely record, if any."""
   global gutindex
   if gutindex:
-    return gutenberg_lookup(gutindex, title, author)
+    book = gutenberg_lookup(gutindex, title, author)
+    if book:
+      return book + (gutindex[book],)
+    else:
+      return None
 
   if os.path.exists("/tmp/gutindex.pkl"):
     gutindex = pickle.load(open("/tmp/gutindex.pkl", "rb"))
-    return gutenberg_lookup(gutindex, title, author)
+    return gutenberg(title, author)
 
   line_count = 0
   gutindex = {}
@@ -214,7 +217,7 @@ def gutenberg(title, author):
             continue
           parts.append(line.strip())
   pickle.dump(gutindex, open("/tmp/gutindex.pkl", "wb"))
-  return gutenberg_lookup(gutindex, title, author)
+  return gutenberg(title, author)
 
 
 # Overdrive has separate URLs for each library, but doesn't need a login to report
