@@ -26,72 +26,73 @@
 <body>
   <h1>Find Libraries for Books</h1>
   <form method="POST" action="find.cgi" enctype="multipart/form-data">
-    <label>
-      <div>
-        <p>
-          This website allows you to check one or more books against
-          several library networks' ebook lending. It only tells you
-          about books from your list that you could borrow
-          immediately, with no wait.
-        </p>
-	<p>
-	  To use this, you'll need, at minimum, a library card for a
-	  library that uses <a href="https://libbyapp.com">Libby</a> (also
-	  called <a href="https://overdrive.com">Overdrive</a>) for lending
-	  ebooks. This is fairly common these days, so check and see for your
-	  own. If you live in Massachusetts, you can get an "eCard" from the
-	  Boston Public Library by going to <a
-	  href="https://apps.bpl.org/ecard">https://apps.bpl.org/ecard</a>,
-	  which will give you access to Libby.
-	</p>
-	<p>
-	  Next, you'll need to find out what address your library uses for
-	  Overdrive. It will look something like
-	  <code>bpl.overdrive.com</code>. Your library's website may tell you,
-	  or, you can go to <a
-	    href="https://overdrive.com/libraries">overdrive.com</a> and search
-	  for your library. Eventually it should take you to a page with a URL
-	  like <code>bpl.overdrive.com</code>. Remember the subdomain, the
-	  part before <code>.overdrive.com</code> (so "bpl" in this example).
-	</p>
-	<p>
-	  Put this subdomain into the "Overdrive subdomains" box on this
-	  page. If you are lucky enough to have more than one library card for
-	  different libraries that use it, then you can put them in,
-	  comma-separated.
-	</p>
-	<p>
-	  Now you can put the books you're looking for into the Books
-	  text box below. One per line, with the title, a comma, and
-	  the author's first and last names. If there are commas in
-	  the title, then wrap the title in quotation marks. For
-	  example:
-	  <ul>
-            <li>"Description of a New World, Called The Blazing-World", Margaret Cavendish</li>
-	  </ul>
-	  Using just a part of the title or author's name may work
-	  (such as just their last name), however, it increases the
-	  chance that the system will misidentify the book and so
-	  say the wrong one is present.
-	</p>
-	<p>
-	  You can also copy in the full CSV from a <a
-	  href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
-	  export</a>, or upload one: <input type="file" name="csvfile">
-	</p>
-	<p>
-	  As a final note, <a href="https://hoopladigital.com">Hoopla</a>
-	  is another service for lending ebooks, which works differently than
-	  Libby. I have not figured out how to add configuration for Hoopla,
-	  so, if you have a library card for a library in the Minuteman
-	  network that subscribes to Hoopla, then that column in the output
-	  will be accurate for you. For everyone else, sorry, ignore that
-	  column and books that are only available through it.
-	</p>
-      </div>
-      <h3>Books</h3>
-      <textarea name="books" rows="6" cols="40"></textarea>
-    </label>
+    <p>
+      This website allows you to check one or more books against
+      several library networks' ebook lending. It only tells you
+      about books from your list that you could borrow
+      immediately, with no wait.
+    </p>
+	  <p>
+	    To use this, you'll need, at minimum, a library card for a
+	    library that uses <a href="https://libbyapp.com">Libby</a> (also
+	    called <a href="https://overdrive.com">Overdrive</a>) for lending
+	    ebooks. This is fairly common these days, so check and see for your
+	    own. If you live in Massachusetts, you can get an "eCard" from the
+	    Boston Public Library by going to <a
+	    href="https://apps.bpl.org/ecard">https://apps.bpl.org/ecard</a>,
+	    which will give you access to Libby.
+	  </p>
+	  <p>
+	    Next, you'll need to find out what address your library uses for
+	    Overdrive. It will look something like
+	    <code>bpl.overdrive.com</code>. Your library's website may tell you,
+	    or, you can go to <a
+	      href="https://overdrive.com/libraries">overdrive.com</a> and search
+	    for your library. Eventually it should take you to a page with a URL
+	    like <code>bpl.overdrive.com</code>. Remember the subdomain, the
+	    part before <code>.overdrive.com</code> (so "bpl" in this example).
+	  </p>
+	  <p>
+	    Put this subdomain into the "Overdrive subdomains" box on this
+	    page. If you are lucky enough to have more than one library card for
+	    different libraries that use it, then you can put them in,
+	    comma-separated.
+	  </p>
+	  <p>
+	    Now you can put the books you're looking for into the Books
+	    text box below. One per line, with the title, a comma, and
+	    the author's first and last names. If there are commas in
+	    the title, then wrap the title in quotation marks. For
+	    example:
+	    <ul>
+        <li>"Description of a New World, Called The Blazing-World", Margaret Cavendish</li>
+	    </ul>
+	    Using just a part of the title or author's name may work
+	    (such as just their last name), however, it increases the
+	    chance that the system will misidentify the book and so
+	    say the wrong one is present.
+	  </p>
+	  <p>
+	    You can also copy in the full CSV from a <a
+	    href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590">Goodreads
+	    export</a>, or upload one: <input type="file" name="csvfile"></input>
+	  </p>
+	  <p>
+	    As a final note, <a href="https://hoopladigital.com">Hoopla</a>
+	    is another service for lending ebooks, which works differently than
+	    Libby. I have not figured out how to add configuration for Hoopla,
+	    so, if you have a library card for a library in the Minuteman
+	    network that subscribes to Hoopla, then that column in the output
+	    will be accurate for you. For everyone else, sorry, ignore that
+	    column and books that are only available through it.
+	  </p>
+    <p>
+      For an example, <button type="button" onclick="example_data()">click
+      here</button> to see the format, then click Submit to see their
+      availability.
+    </p>
+    <h3>Books</h3>
+    <textarea id="books" name="books" rows="6" cols="40"></textarea>
     <div>
       <label>Overdrive subdomains: <input id="overdrive" name="overdrive" value="minuteman,bpl"></label>
     </div>

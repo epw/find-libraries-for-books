@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function example_data() {
+  const books = document.getElementById("books");
+  books.value = "Title,Author";
+}
+
 function download_books() {
   download_csv_file(["title", "author", "overdrive", "hoopla", "other"],
     books_json, "table.csv");
@@ -53,7 +58,7 @@ function book_events(tr) {
   }
   tr.querySelector("td.hide").addEventListener("click", hide_book);
 }
-  
+
 function init() {
     const query_params = new URLSearchParams(location.search);
     if (query_params.get("overdrive")) {
