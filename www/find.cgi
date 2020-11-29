@@ -51,6 +51,8 @@ def lookup_books(books, csvfile, overdrive):
         continue
       title = row[0]
       author = row[1]
+    if not title.strip():
+      continue
     book = library.find_book(title, author, overdrive)
     if library.found_book(book):
       items.append(book)

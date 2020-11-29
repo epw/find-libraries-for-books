@@ -23,6 +23,11 @@ function download_books() {
 }
 
 async function record_hide_book(tr) {
+  const params = new URLSearchParams(location.search);
+  if (params.get("daily") != "1") {
+    return false;
+  }
+
   const title = tr.querySelector(".title").textContent;
   const response = await fetch("hide_book.cgi", {
     method: "POST",

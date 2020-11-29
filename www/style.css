@@ -24,6 +24,8 @@ label > div {
 
 textarea {
   margin-bottom: 4px;
+  width: 100%;
+  max-width: 800px;
 }
 
 td {
@@ -39,4 +41,8 @@ td.hide {
 #errors {
     color: red;
     margin: 10px 0;
+}
+
+#data {
+  display: none;
 }
