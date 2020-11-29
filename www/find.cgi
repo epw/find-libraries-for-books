@@ -142,7 +142,7 @@ def page(books, csvfile, overdrive, daily=False):
         hidden_book = True
         break
     if hidden_book:
-      break
+      continue
     embedded.append(assembled)
     rows.append(make_row(assembled))
   count = len(rows)
