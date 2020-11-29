@@ -132,11 +132,10 @@ def gutenberg_lookup(gutindex, title, author):
         filtered_works.append(work)
     if len(filtered_works) == 0:
       return None
-      #      return works[0] # Giving up, giving "most likely" of last set
     elif len(filtered_works) == 1:
       return gutenberg_match(filtered_works[0], title, author)
     works = filtered_works
-  return filtered_works
+  return filtered_works[0]  # Giving up, giving "most likely" of last set
 
 
 def gutenberg(title, author):
