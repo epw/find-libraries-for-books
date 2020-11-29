@@ -14,7 +14,7 @@
 
 function example_data() {
   const books = document.getElementById("books");
-  books.value = "Title,Author";
+  books.value = document.getElementById("example").textContent;
 }
 
 function download_books() {
