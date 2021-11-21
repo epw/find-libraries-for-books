@@ -116,9 +116,18 @@ def page(books, csvfile, overdrive, daily=False):
   else:
     overdrive = library.OVERDRIVE_SUBDOMAINS
 
+  errors = ""
+
   if daily:
     with open(books) as f:
-      book_data = json.load(f)
+      try:
+        book_data = json.load(f)
+      except json.decoder.JSONDecodeError as e:
+        if os.path.getsize(f.name) == 0:
+          errors = "Available books file empty."
+        else:
+          errors = str(e)
+        book_data = []
   else:
     book_data = lookup_books(books, csvfile, overdrive)
 
@@ -152,7 +161,8 @@ def page(books, csvfile, overdrive, daily=False):
     print(f.read().format(count=count,
                           rows=rows,
                           books_json=json.dumps(embedded),
-                          hidden=hidden_count))
+                          hidden=hidden_count,
+                          errors=errors))
 
 
 def main():
