@@ -279,14 +279,17 @@ def minuteman(title, author):
 
   Minuteman is nice enough to have a "Availble at Hoopla" annotation on the book results,
   so we can read that."""
+  data = {"hoopla": False}
   query_str = urllib.parse.quote("C__St:({title}) a:({author})__Orightresult__U".format(
     title=title,
     author=author))
-  r = requests.get("https://find.minlib.net/iii/encore/search/" + query_str,
-                   params={"lang": "eng", "suite": "cobalt", "fromMain": "yes"})
+  try:
+    r = requests.get("https://find.minlib.net/iii/encore/search/" + query_str,
+                     params={"lang": "eng", "suite": "cobalt", "fromMain": "yes"})
+  except requests.exceptions.ConnectionError:
+    return data
   r.raise_for_status()
   soup = BeautifulSoup(r.text, "html.parser")
-  data = {"hoopla": False}
   for el in soup.find_all("div", class_="searchResult"):
     item_type = el.select("div.recordDetailValue > span.itemMediaDescription")[0].string.strip()
     if item_type == "EBOOK":
