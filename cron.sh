@@ -23,6 +23,6 @@ mkdir -p $log
 ROOT=$HOME/projects/find-libraries-for-books
 
 cd $ROOT
-./library.py $HOME/to_read.csv > $HOME/available_books.json # 2>/dev/null
+./library.py $HOME/to_read.csv > $HOME/available_books.json 2>/dev/null
 cp $HOME/available_books.json $log/availale_books-`date -Iminutes`.json
 
