@@ -444,7 +444,7 @@ def library(goodreads_csv, overdrive_subdomains):
     if wrong_shelf(row):
       continue
     sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
-    book = find_book(row["Title"], row["Author"], overdrive_subdomains)
+    book = find_book(row["Title"], row["Author"], row["Bookshelves"], overdrive_subdomains)
     if found_book(book):
       items.append(book)
   return items

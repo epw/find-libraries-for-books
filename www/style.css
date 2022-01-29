@@ -14,6 +14,26 @@
  * limitations under the License.
  */
 
+/* Dark mode */
+body {
+    background-color: black;
+    color: white;
+}
+
+a {
+    color: #66f;
+}
+
+textarea {
+  background-color: black;
+  color: white;
+}
+
+button, input[type="submit"], input[type="text"] {
+    background-color: #333;
+    color: white;
+}
+
 h1 {
   text-align: center;
 }
