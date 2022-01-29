@@ -25,6 +25,15 @@ import os
 
 from values import DB
 
+
+# These are the bookshelves that should be listed as tags in the table of found books
+TAG_SHELVES = ["starred", "black-voices", "not-just-white-cishet-authors",
+               "heterogeneous-subjects", "elyse-and-mikey-recommend", "george-recommends",
+               "n-j-jemisin-recommends", "nonfiction"]
+def book_tags(bookshelves):
+  return [shelf for shelf in bookshelves.split(", ") if shelf.lower() in TAG_SHELVES]
+  
+
 def lookup_books(books, csvfile, overdrive):
   if csvfile is not None and csvfile.filename:
     # In Python 2, I could have just said csv.DictReader(csvfile.file)
@@ -54,6 +63,7 @@ def lookup_books(books, csvfile, overdrive):
     if not title.strip():
       continue
     book = library.find_book(title, author, overdrive)
+    book["tags"] = book_tags(row.get("Bookshelves", ""))
     if library.found_book(book):
       items.append(book)
   if csvfile is not None and csvfile.filename:
@@ -73,7 +83,7 @@ def assemble_overdrive(book):
 def assemble_hoopla(book):
   if "hoopla" in book:
     if book["hoopla"].startswith("http"):
-      return a_tag(book["hoopla"], "True")
+      return a_tag(book["hoopla"], "Hoopla")
   return book.get("hoopla", "")
 
 
@@ -85,12 +95,22 @@ def assemble_other(book):
   return ""
 
 
+def assemble_access(book):
+  overdrive = assemble_overdrive(book)
+  hoopla = assemble_hoopla(book)
+  other = assemble_other(book)
+  return ", ".join([link for link in [overdrive, hoopla, other] if link])
+
+
+def assemble_tags(book):
+  return ""
+
+
 def assemble_book(book):
   return {"title": book.get("title", ""),
           "author": book.get("author", ""),
-          "overdrive": assemble_overdrive(book),
-          "hoopla": assemble_hoopla(book),
-          "other": assemble_other(book)}
+          "access": assemble_access(book),
+          "tags": assemble_tags(book)}
 
 
 def make_row(book):
@@ -98,14 +118,12 @@ def make_row(book):
   <td class="hide"><span>X</span></td>
   <td class="title">{title}</td>
   <td class="author">{author}</td>
-  <td class="overdrive">{overdrive}</td>
-  <td class="hoopla">{hoopla}</td>
-  <td class="other">{other}</td>
+  <td class="access">{access}</td>
+  <td class="tags">{tags}</td>
 </tr>""".format(title=book["title"],
                 author=book["author"],
-                overdrive=book["overdrive"],
-                hoopla=book["hoopla"],
-                other=book["other"])
+                access=book["access"],
+                tags=book["tags"])
 
 
 def page(books, csvfile, overdrive, daily=False):
