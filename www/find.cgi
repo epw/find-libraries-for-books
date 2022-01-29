@@ -26,14 +26,6 @@ import os
 from values import DB
 
 
-# These are the bookshelves that should be listed as tags in the table of found books
-TAG_SHELVES = ["starred", "black-voices", "not-just-white-cishet-authors",
-               "heterogeneous-subjects", "elyse-and-mikey-recommend", "george-recommends",
-               "n-j-jemisin-recommends", "nonfiction"]
-def book_tags(bookshelves):
-  return [shelf for shelf in bookshelves.split(", ") if shelf.lower() in TAG_SHELVES]
-  
-
 def lookup_books(books, csvfile, overdrive):
   if csvfile is not None and csvfile.filename:
     # In Python 2, I could have just said csv.DictReader(csvfile.file)
@@ -62,8 +54,7 @@ def lookup_books(books, csvfile, overdrive):
       author = row[1]
     if not title.strip():
       continue
-    book = library.find_book(title, author, overdrive)
-    book["tags"] = book_tags(row.get("Bookshelves", ""))
+    book = library.find_book(title, author, row.get("Bookshelves", ""), overdrive)
     if library.found_book(book):
       items.append(book)
   if csvfile is not None and csvfile.filename:
@@ -103,7 +94,7 @@ def assemble_access(book):
 
 
 def assemble_tags(book):
-  return ""
+  return ", ".join(book.get("tags", []))
 
 
 def assemble_book(book):

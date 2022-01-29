@@ -359,7 +359,17 @@ def open_library(title, author):
   return False
 
 
-def find_book(full_title, author, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
+# These are the bookshelves that should be listed as tags in the table of found books
+TAG_SHELVES = ["starred", "black-voices", "not-just-white-cishet-authors",
+               "heterogeneous-subjects", "elyse-and-mikey-recommend", "george-recommends",
+               "n-j-jemisin-recommends", "nonfiction"]
+def book_tags(bookshelves):
+  if bookshelves is None:
+    return []
+  return [shelf for shelf in bookshelves.split(", ") if shelf.lower() in TAG_SHELVES]
+
+
+def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
   """For each book, look it up in Minuteman for Hoopla, and in various Overdrive feeds.
 
   Also looks at Open Library and Gutenberg.
@@ -367,7 +377,8 @@ def find_book(full_title, author, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
   Consolidate the data to tell us where to look for it."""
   title_parts = extract_title(full_title)
   data = {"title": full_title,
-          "author": author}
+          "author": author,
+          "tags": book_tags(bookshelves)}
   gut = gutenberg(title_parts["title"], author)
   if gut:
     data["gutenberg"] = gut
