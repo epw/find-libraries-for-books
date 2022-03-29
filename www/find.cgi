@@ -121,6 +121,13 @@ def make_row(book):
                 tags=book["tags"])
 
 
+def inject_css(account):
+  if account.get("hide"):
+    return ""
+  return """
+th.hide, td.hide { display: none; }
+"""
+
 def page(books, csvfile, overdrive, daily=False, account=None):
   print("Content-Type: text/html\n")
 
@@ -158,13 +165,14 @@ def page(books, csvfile, overdrive, daily=False, account=None):
   for book in book_data:
     assembled = assemble_book(book)
     hidden_book = False
-    for hidden in db:
-      if hidden["title"] == assembled["title"] and hidden["author"] == assembled["author"]:
-        hidden_count += 1
-        hidden_book = True
-        break
-    if hidden_book:
-      continue
+    if account.get("hide"):
+      for hidden in db:
+        if hidden["title"] == assembled["title"] and hidden["author"] == assembled["author"]:
+          hidden_count += 1
+          hidden_book = True
+          break
+      if hidden_book:
+        continue
     embedded.append(assembled)
     rows.append(make_row(assembled))
   count = len(rows)
@@ -172,6 +180,7 @@ def page(books, csvfile, overdrive, daily=False, account=None):
 
   with open("books.template.html") as f:
     print(f.read().format(personal_book_list=account["personal_book_list"],
+                          inject_css=inject_css(account),
                           count=count,
                           rows=rows,
                           books_json=json.dumps(embedded),
@@ -185,7 +194,8 @@ def main():
   books = params.getfirst("books", "")
   account = {
     "available": "available_books.json",
-    "personal_book_list": "a local file on the server"
+    "personal_book_list": "a local file on the server",
+    "hide": True
   }
   daily = params.getfirst("daily", "").strip().lower() # Whether to set to filename for daily dump from ../cron.sh
   for person in PEOPLE:

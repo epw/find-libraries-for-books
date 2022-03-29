@@ -366,7 +366,9 @@ TAG_SHELVES = ["starred", "black-voices", "not-just-white-cishet-authors",
 def book_tags(bookshelves):
   if bookshelves is None:
     return []
-  return [shelf for shelf in bookshelves.split(", ") if shelf.lower() in TAG_SHELVES]
+  if TAG_SHELVES:
+    return [shelf for shelf in bookshelves.split(", ") if shelf.lower() in TAG_SHELVES]
+  return bookshelves.split(", ")
 
 
 def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRIVE_SUBDOMAINS):
@@ -424,9 +426,10 @@ def find_physical_book(full_title, author):
 
 
 def wrong_shelf(row):
-  if "Bookshelves" in row:
+  if "Bookshelves" in row and TAG_SHELVES:
     shelves = map(str.strip, row.get("Bookshelves", "").split(","))
     return "to-read" not in shelves
+  return False
 
 
 def found_book(book):
@@ -469,6 +472,7 @@ def usage(prog):
 
 
 def main(argv):
+  global TAG_SHELVES
   overdrive_subdomains = OVERDRIVE_SUBDOMAINS
   def inner(f):
     json.dump(library(f, overdrive_subdomains), sys.stdout)
@@ -478,8 +482,13 @@ def main(argv):
   else:
     if len(argv) > 2:
       overdrive_subdomains = argv[2].split(",")
+
     if len(argv) > 3:
-      TAG_SHELVES = argv[3].split(",")
+      if argv[3]:
+        TAG_SHELVES = argv[3].split(",")
+      else:
+        TAG_SHELVES = []
+
     with open(argv[1]) as f:
       inner(f)
 
