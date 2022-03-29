@@ -23,8 +23,12 @@ import io
 import library
 import os
 
-from values import DB
-
+try:
+  from private.values import DB
+  from private.values import PEOPLE
+except ModuleNotFoundError:
+  from values import DB
+  PEOPLE = {}
 
 def lookup_books(books, csvfile, overdrive):
   if csvfile is not None and csvfile.filename:
@@ -117,7 +121,7 @@ def make_row(book):
                 tags=book["tags"])
 
 
-def page(books, csvfile, overdrive, daily=False):
+def page(books, csvfile, overdrive, daily=False, account=None):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -167,7 +171,8 @@ def page(books, csvfile, overdrive, daily=False):
   rows = "\n".join(rows)
 
   with open("books.template.html") as f:
-    print(f.read().format(count=count,
+    print(f.read().format(personal_book_list=account["personal_book_list"],
+                          count=count,
                           rows=rows,
                           books_json=json.dumps(embedded),
                           hidden=hidden_count,
@@ -178,12 +183,19 @@ def main():
   params = cgi.FieldStorage()
   csvfile = params["csvfile"] if "csvfile" in params else None
   books = params.getfirst("books", "")
-  daily = params.getfirst("daily") # Whether to set to filename for daily dump from ../cron.sh
-  if daily.strip().lower() == "alyssa":
-    books = "alyssa_available_books.json"
-  elif daily:
-    books = "available_books.json"
-  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"))
+  account = {
+    "available": "available_books.json",
+    "personal_book_list": "a local file on the server"
+  }
+  daily = params.getfirst("daily", "").strip().lower() # Whether to set to filename for daily dump from ../cron.sh
+  for person in PEOPLE:
+    if daily == person:
+      account = PEOPLE[person]
+      break
+
+  if daily:
+    books = account["available"]
+  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"), account)
 
 
 if __name__ == "__main__":
