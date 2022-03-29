@@ -425,7 +425,7 @@ def find_physical_book(full_title, author):
 
 def wrong_shelf(row):
   if "Bookshelves" in row:
-    shelves = map(str.strip, row["Bookshelves"].split(","))
+    shelves = map(str.strip, row.get("Bookshelves", "").split(","))
     return "to-read" not in shelves
 
 
@@ -444,7 +444,7 @@ def library(goodreads_csv, overdrive_subdomains):
     if wrong_shelf(row):
       continue
     sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
-    book = find_book(row["Title"], row["Author"], row["Bookshelves"], overdrive_subdomains)
+    book = find_book(row["Title"], row["Author"], row.get("Bookshelves"), overdrive_subdomains)
     if found_book(book):
       items.append(book)
   return items
@@ -478,6 +478,8 @@ def main(argv):
   else:
     if len(argv) > 2:
       overdrive_subdomains = argv[2].split(",")
+    if len(argv) > 3:
+      TAG_SHELVES = argv[3].split(",")
     with open(argv[1]) as f:
       inner(f)
 

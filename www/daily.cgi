@@ -19,7 +19,9 @@ cgitb.enable()
 
 
 def main():
-  print("Location: find.cgi?daily=1\n")
+  params = cgi.FieldStorage()
+  daily = params.getfirst("daily", "1")
+  print("Location: find.cgi?daily={}\n".format(daily))
 
 
 if __name__ == "__main__":

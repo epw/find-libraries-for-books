@@ -94,7 +94,7 @@ def assemble_access(book):
 
 
 def assemble_tags(book):
-  return ", ".join(book.get("tags", []))
+  return ", ".join(sorted(book.get("tags", [])))
 
 
 def assemble_book(book):
@@ -178,8 +178,11 @@ def main():
   params = cgi.FieldStorage()
   csvfile = params["csvfile"] if "csvfile" in params else None
   books = params.getfirst("books", "")
-  if params.getfirst("daily"):
-    books = "available_books.json" # Set to filename for daily dump from ../cron.sh
+  daily = params.getfirst("daily") # Whether to set to filename for daily dump from ../cron.sh
+  if daily.strip().lower() == "alyssa":
+    books = "alyssa_available_books.json"
+  elif daily:
+    books = "available_books.json"
   page(books, None, params.getfirst("overdrive"), params.getfirst("daily"))
 
 
