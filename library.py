@@ -150,6 +150,8 @@ def gutenberg(title, author):
 
   if os.path.exists("/tmp/gutindex.pkl"):
     gutindex = pickle.load(open("/tmp/gutindex.pkl", "rb"))
+    if not gutindex:
+      os.unlink("/tmp/gutindex.pkl")
     return gutenberg(title, author)
 
   line_count = 0
@@ -170,7 +172,7 @@ def gutenberg(title, author):
     line = bytesline.decode("utf8")
     line_count += 1
     if state == None:
-      if line.strip() == "<==LISTINGS==>":
+      if re.search(r'<=+LISTINGS=+>', line.strip()):
         state = "listings"
     elif state == "listings":
       if line.startswith("TITLE and AUTHOR"):
