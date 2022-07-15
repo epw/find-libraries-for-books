@@ -242,25 +242,30 @@ def overdrive(subdomain, title, author):
                            "creator": author,
                            "sortBy": "relevance"})
   r.raise_for_status()
-  data = {"available": False}
+  book_data = {"available": False, "format": "ebook"}
   # This is the start of the line where the JSON blobs reside.
   match = "window.OverDrive.mediaItems = "
   start = r.text.find(match)
   if start == -1:
-    return data
+    return [book_data]
   decoder = json.JSONDecoder()
   # This should read just one JSON object from the select spot in the text.
   # Since it stops after one object, we don't have to worry about otherwise detecting
   # the end of the JSON blob.
   media_items = decoder.raw_decode(r.text[start + len(match):])[0]
+  books = []
   for key in media_items:
     item = media_items[key]
-    if item["title"] == title and item["type"]["name"] == "eBook" and item["isAvailable"]:
-      data["available"] = True
+    if item["title"] == title and item["isAvailable"]:
+      book = book_data.copy()
+      if item["type"]["name"] == "eBook":
+        book["available"] = True
+      elif item["type"]["name"] == "Audiobook":
+        book["available"] = True
+        book["format"] = "audiobook"
       # This URL redirects to a specific one for your library if you are logged in.
-      data["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
-      break
-  return data
+      book["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
+  return books
 
 
 # My main library is in the Minuteman network, and their page lists whether each
@@ -380,36 +385,40 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
 
   Consolidate the data to tell us where to look for it."""
   title_parts = extract_title(full_title)
-  data = {"title": full_title,
-          "author": author,
-          "tags": book_tags(bookshelves)}
+  book_data = {"title": full_title,
+               "author": author,
+               "tags": book_tags(bookshelves)}
   gut = gutenberg(title_parts["title"], author)
   if gut:
-    data["gutenberg"] = gut
-    return data
+    book_data["gutenberg"] = gut
+    return [book_data]
   try:
     mln_lookup = minuteman(mln_title(title_parts), author)
     if mln_lookup["hoopla"]:
-      data["hoopla"] = mln_lookup["hoopla"]
-      return data
+      book_data["hoopla"] = mln_lookup["hoopla"]
+      return [book_data]
   except requests.exceptions.HTTPError as e:
     sys.stderr.write(str(e))
   overdrive_place = None
   for subdomain in overdrive_subdomains:
     try:
       overdrive_lookup = overdrive(subdomain, overdrive_title(title_parts), author)
-      if overdrive_lookup["available"]:
-        overdrive_place = subdomain
-        data["overdrive"] = overdrive_place
-        data["overdrive_url"] = overdrive_lookup["url"]
-        return data
+      books = []
+      for book in overdrive_lookups:
+        if book["available"]:
+          data = book_data.copy()
+          overdrive_place = subdomain
+          data["overdrive"] = overdrive_place
+          data["overdrive_url"] = overdrive_lookup["url"]
+          books.append(data)
+        return books
     except requests.exceptions.HTTPError as e:
       sys.stderr.write(str(e))
   try:
-    data["openlibrary"] = open_library(title_parts["title"], author)
+    book_data["openlibrary"] = open_library(title_parts["title"], author)
   except requests.exceptions.HTTPError as e:
     sys.stderr.write(str(e))
-  return data
+  return [book_data]
 
 
 def find_physical_book(full_title, author):
@@ -449,9 +458,10 @@ def library(goodreads_csv, overdrive_subdomains):
     if wrong_shelf(row):
       continue
     sys.stderr.write("{} by {}\n".format(row["Title"], row["Author"]))
-    book = find_book(row["Title"], row["Author"], row.get("Bookshelves"), overdrive_subdomains)
-    if found_book(book):
-      items.append(book)
+    books = find_book(row["Title"], row["Author"], row.get("Bookshelves"), overdrive_subdomains)
+    for book in books:
+      if found_book(book):
+        items.append(book)
   return items
 
 
