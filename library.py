@@ -265,6 +265,7 @@ def overdrive(subdomain, title, author):
         book["format"] = "audiobook"
       # This URL redirects to a specific one for your library if you are logged in.
       book["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
+      books.append(book)
   return books
 
 
@@ -402,14 +403,15 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
   overdrive_place = None
   for subdomain in overdrive_subdomains:
     try:
-      overdrive_lookup = overdrive(subdomain, overdrive_title(title_parts), author)
+      overdrive_lookups = overdrive(subdomain, overdrive_title(title_parts), author)
       books = []
       for book in overdrive_lookups:
         if book["available"]:
           data = book_data.copy()
           overdrive_place = subdomain
           data["overdrive"] = overdrive_place
-          data["overdrive_url"] = overdrive_lookup["url"]
+          data["overdrive_url"] = book["url"]
+          data["format"] = book["format"]
           books.append(data)
         return books
     except requests.exceptions.HTTPError as e:
