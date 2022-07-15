@@ -104,6 +104,7 @@ def assemble_tags(book):
 def assemble_book(book):
   return {"title": book.get("title", ""),
           "author": book.get("author", ""),
+          "format": book.get("format", "ebook"),
           "access": assemble_access(book),
           "tags": assemble_tags(book)}
 
@@ -128,7 +129,7 @@ def inject_css(account):
 th.hide, td.hide { display: none; }
 """
 
-def page(books, csvfile, overdrive, daily=False, account=None):
+def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -164,6 +165,12 @@ def page(books, csvfile, overdrive, daily=False, account=None):
   hidden_count = 0
   for book in book_data:
     assembled = assemble_book(book)
+    if audiobooks:
+      if assembled["format"] != "audiobook":
+        continue
+    else:
+      if assembled["format"] == "audiobook":
+        continue
     hidden_book = False
     if account.get("hide"):
       for hidden in db:
@@ -205,7 +212,7 @@ def main():
 
   if daily:
     books = account["available"]
-  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"), account)
+  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"), account, params.getfirst("audiobooks"))
 
 
 if __name__ == "__main__":
