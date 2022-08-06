@@ -370,7 +370,7 @@ def open_library(title, author):
 # These are the bookshelves that should be listed as tags in the table of found books
 TAG_SHELVES = ["starred", "black-voices", "not-just-white-cishet-authors",
                "heterogeneous-subjects", "elyse-and-mikey-recommend", "george-recommends",
-               "n-j-jemisin-recommends", "nonfiction"]
+               "n-j-jemisin-recommends", "nonfiction", "jewish", "faerie-stories"]
 def book_tags(bookshelves):
   if bookshelves is None:
     return []
