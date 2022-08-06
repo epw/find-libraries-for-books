@@ -238,6 +238,18 @@ def gutenberg(title, author):
 def overdrive_title(title_parts):
   return title_parts["title"]
 
+def group_or_zero(regex):
+  if not regex:
+    return 0
+  return regex.group(1)
+
+def overdrive_covers(covers):
+  keys = sorted(covers,
+                key=lambda cover: int(group_or_zero(re.match(r"cover(\d+)Wide", cover))))
+  if not keys:
+    return None
+  return {"thumbnail": covers[keys[0]],
+          "full": covers[keys[-1]]}
 
 def overdrive(subdomain, title, author):
   """Parse Overdrive to find books that are available.
@@ -267,12 +279,14 @@ def overdrive(subdomain, title, author):
     if item["title"] == title and item["isAvailable"]:
       book = book_data.copy()
       if item["type"]["name"] == "eBook":
+#        return item
         book["available"] = True
       elif item["type"]["name"] == "Audiobook":
         book["available"] = True
         book["format"] = "audiobook"
       # This URL redirects to a specific one for your library if you are logged in.
       book["url"] = "https://{}.overdrive.com/media/{}".format(subdomain, key)
+      book["covers"] = overdrive_covers(item["covers"])
       books.append(book)
   return books
 
