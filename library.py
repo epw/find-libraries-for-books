@@ -48,12 +48,20 @@ import pickle
 import re
 import requests
 import sys
+import tempfile
 import urllib.parse
 
 
 OVERDRIVE_SUBDOMAINS = ("minuteman", "bpl")
 
 GOODREADS_SERIES_REGEX = re.compile(r'(.+)\(([^\)]*), [#](\d+)\)')
+
+TMPDIR = tempfile.TemporaryDirectory(prefix="gutenberg")
+
+TXT = "txt"
+PKL = "pkl"
+def gutcache(extension):
+  return os.path.join(TMPDIR.name, "gutindex." + extension)
 
 def extract_title(title):
   """Parse a title that is part of a series as displayed by Goodreads."""
@@ -148,10 +156,10 @@ def gutenberg(title, author):
     else:
       return None
 
-  if os.path.exists("/tmp/gutindex.pkl"):
-    gutindex = pickle.load(open("/tmp/gutindex.pkl", "rb"))
+  if os.path.exists(gutcache(PKL)):
+    gutindex = pickle.load(open(gutcache(PKL), "rb"))
     if not gutindex:
-      os.unlink("/tmp/gutindex.pkl")
+      os.unlink(gutcache(PKL))
     return gutenberg(title, author)
 
   line_count = 0
@@ -166,7 +174,7 @@ def gutenberg(title, author):
     gutindex = "not found"
     raise e
   r.encoding = "UTF-8"
-  with open("/tmp/gutindex.txt", "w") as f:
+  with open(gutcache(TXT), "w") as f:
     f.write(r.text)
   for bytesline in r.iter_lines():
     line = bytesline.decode("utf8")
@@ -217,7 +225,7 @@ def gutenberg(title, author):
           if line.strip() == "What Have the Greeks Done, by":
             continue
           parts.append(line.strip())
-  pickle.dump(gutindex, open("/tmp/gutindex.pkl", "wb"))
+  pickle.dump(gutindex, open(gutcache(PKL), "wb"))
   return gutenberg(title, author)
 
 
