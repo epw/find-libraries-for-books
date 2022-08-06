@@ -51,16 +51,19 @@ def lookup_books(books, csvfile, overdrive):
     if "Title" in row:
       title = row["Title"]
       author = row["Author"]
+      bookshelves = row.get("Bookshelves", "")
     else:
       if not row:
         continue
       title = row[0]
       author = row[1]
+      bookshelves = ""
     if not title.strip():
       continue
-    book = library.find_book(title, author, row.get("Bookshelves", ""), overdrive)
-    if library.found_book(book):
-      items.append(book)
+    books = library.find_book(title, author, bookshelves, overdrive)
+    for book in books:
+      if library.found_book(book):
+        items.append(book)
   if csvfile is not None and csvfile.filename:
     items += lookup_books(books, None, overdrive)
   return items
