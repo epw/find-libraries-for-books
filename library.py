@@ -279,7 +279,6 @@ def overdrive(subdomain, title, author):
     if item["title"] == title and item["isAvailable"]:
       book = book_data.copy()
       if item["type"]["name"] == "eBook":
-#        return item
         book["available"] = True
       elif item["type"]["name"] == "Audiobook":
         book["available"] = True
@@ -434,6 +433,7 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
           data["overdrive"] = overdrive_place
           data["overdrive_url"] = book["url"]
           data["format"] = book["format"]
+          data["covers"] = book.get("covers", None)
           books.append(data)
         return books
     except requests.exceptions.HTTPError as e:
