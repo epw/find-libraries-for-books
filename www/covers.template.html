@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  Copyright 2020 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+
+<head>
+  <title>Find Libraries for Books | Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="json_to_csv.js"></script>
+  <script src="script.js" async defer></script>
+  <style>
+    {inject_css}
+  </style>
+</head>
+
+<body>
+  <h1>Find Libraries for Books</h1>
+  <div>
+    <p>
+      In the Access column, you will be told where you can check out
+      or download the book. If in Overdrive, the link will be for the
+      network that has the book available. Checking out on Overdrive
+      will also check out for Libby.
+    </p>
+    <p>
+      If the access link is Hoopla, the book was found in the
+      Somerville Public Library's Hoopla account.
+    </p>
+    <p>
+      <a href="https://gutenberg.org">Project Gutenberg</a> is also
+      checked. <a href="https://openlibrary.org">Open Library</a> is
+      currently unavailable.
+    </p>
+    <p>
+      You can update the list of books being checked at {personal_book_list}.
+    </p>
+    <p>
+      (The Hide column is an unfinished feature and can be ignored.)
+    </p>
+    <p>
+      <a href="{other_format_url}">Switch to {other_format}.</a>
+    </p>
+  </div>
+  <div>{count} books found.</div>
+  <div id="errors">{errors}</div>
+  <table border="1">
+    <tr>
+      <th class="hide">Hide</th>
+      <th>Cover</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Access</th>
+      <th>Tags</th>
+    </tr>
+    {rows}
+  </table>
+  <p>
+    {hidden} books hidden.
+  </p>
+  <script>
+    const books_json = {books_json};
+  </script>
+  <p>
+    <button onclick="download_books()">Download table as CSV</button>
+  </p>
+  <p>
+    <a href="index.html">New Search</a>
+  </p>
+</body>
+
+</html>

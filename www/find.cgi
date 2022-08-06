@@ -103,18 +103,30 @@ def assemble_access(book):
 def assemble_tags(book):
   return ", ".join(sorted(book.get("tags", [])))
 
+def assemble_cover(book):
+  if not book.get("covers"):
+    return ""
+  return a_tag(book["covers"]["full"]["href"],
+               "<img src='{}'>".format(book["covers"]["thumbnail"]["href"]))
 
 def assemble_book(book):
   return {"title": book.get("title", ""),
+          "covers": assemble_cover(book),
           "author": book.get("author", ""),
           "format": book.get("format", "ebook"),
           "access": assemble_access(book),
           "tags": assemble_tags(book)}
 
 
-def make_row(book):
-  return """<tr>
+def make_row(book, covers):
+  html = """<tr>
   <td class="hide"><span>X</span></td>
+"""
+  if covers:
+    html += """
+  <td class="cover">{cover}</td>
+""".format(cover=book["covers"])
+  html += """
   <td class="title">{title}</td>
   <td class="author">{author}</td>
   <td class="access">{access}</td>
@@ -123,7 +135,7 @@ def make_row(book):
                 author=book["author"],
                 access=book["access"],
                 tags=book["tags"])
-
+  return html
 
 def inject_css(account):
   if account.get("hide"):
@@ -132,7 +144,7 @@ def inject_css(account):
 th.hide, td.hide { display: none; }
 """
 
-def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False):
+def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False, covers=False):
   print("Content-Type: text/html\n")
 
   if overdrive:
@@ -194,11 +206,15 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False)
       if hidden_book:
         continue
     embedded.append(assembled)
-    rows.append(make_row(assembled))
+    rows.append(make_row(assembled, covers))
   count = len(rows)
   rows = "\n".join(rows)
 
-  with open("books.template.html") as f:
+  template = "books.template.html"
+  if covers:
+    template = "covers.template.html"
+  
+  with open(template) as f:
     print(f.read().format(personal_book_list=account["personal_book_list"],
                           inject_css=inject_css(account),
                           count=count,
@@ -227,7 +243,8 @@ def main():
 
   if daily:
     books = account["available"]
-  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"), account, params.getfirst("audiobooks"))
+  page(books, None, params.getfirst("overdrive"), params.getfirst("daily"), account, params.getfirst("audiobooks"),
+       params.getfirst("covers"))
 
 
 if __name__ == "__main__":
