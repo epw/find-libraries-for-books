@@ -182,19 +182,14 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
   errors = ""
 
   audiobook_checked = ""
-#  other_format = "(unimplemented)"
-#  other_format_url = "#"
-
   if audiobooks:
     audiobook_checked = "checked"
 
+  covers_checked = ""
+  if covers:
+    covers_checked = "checked"
+
   if daily:
-#    other_format = "audiobooks"
-#    other_format_url = f"?daily={daily}&audiobooks=1"
-#    if audiobooks:
-#      other_format = "ebooks"
-#      other_format_url = f"?daily={daily}"
-    
     with open(books) as f:
       try:
         book_data = json.load(f)
@@ -249,9 +244,8 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
                           books_json=json.dumps(embedded),
                           hidden=hidden_count,
                           errors=errors,
+                          covers_checked=covers_checked,
                           audiobook_checked=audiobook_checked))
-#                          other_format=other_format,
-#                          other_format_url=other_format_url))
 
 
 def main():

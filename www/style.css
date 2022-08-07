@@ -48,6 +48,10 @@ textarea {
   max-width: 800px;
 }
 
+div.toggles {
+    margin-bottom: 1lh;
+}
+
 td {
   padding-left: 2px;
   padding-right: 2px;

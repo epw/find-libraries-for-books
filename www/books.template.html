@@ -52,10 +52,18 @@
       (The Hide column is an unfinished feature and can be ignored.)
     </p>
     <p>
-      <label>
-	<input type="checkbox" id="audiobook" onchange="change_audiobooks()" {audiobook_checked}>
-	Show audiobooks instead of ebooks
-      </label>
+      <div class="toggles">
+	<label>
+	  <input type="checkbox" id="audiobook" onchange="change_audiobooks()" {audiobook_checked}>
+	  Show audiobooks instead of ebooks
+	</label>
+      </div>
+      <div class="toggles">
+	<label>
+	  <input type="checkbox" id="covers" onchange="change_covers()" {covers_checked}>
+	  Tiled layout with covers
+	</label>
+      </div>
     </p>
   </div>
   <div>{count} books found.</div>

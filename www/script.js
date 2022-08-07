@@ -76,6 +76,11 @@ function change_audiobooks() {
     query_params.set("audiobooks", checkbox_to_param_bool(document.getElementById("audiobook")));
     location.search = query_params;
 }
+function change_covers() {
+    const query_params = new URLSearchParams(location.search);
+    query_params.set("covers", checkbox_to_param_bool(document.getElementById("covers")));
+    location.search = query_params;
+}
 
 function init() {
     const query_params = new URLSearchParams(location.search);
