@@ -113,8 +113,14 @@ div.tags {
 }
 
 div.bookcontrols {
+    display: flex;
+    justify-content: space-between;
     margin-top: auto;
-    text-align: right;
+}
+
+div.bookcontrols a.access {
+    font-size: small;
+    text-decoration: none;
 }
 
 #errors {

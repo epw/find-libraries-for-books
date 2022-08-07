@@ -69,25 +69,29 @@ def lookup_books(books, csvfile, overdrive):
   return items
 
 
-def a_tag(url, text):
-  return "<a href='{}'>{}</a>".format(url, text)
+def a_tag(url, text, classes=None):
+  if classes:
+    classes = " class='{}'".format(" ".join(classes) if type(classes) == list else classes)
+  else:
+    classes = ""
+  return "<a{} href='{}'>{}</a>".format(classes, url, text)
 
 def assemble_overdrive(book):
   if "overdrive_url" in book:
-    return a_tag(book.get("overdrive_url"), book.get("overdrive", "ERROR"))
+    return a_tag(book.get("overdrive_url"), book.get("overdrive", "ERROR"), "access")
   return book.get("overdrive", "")
 
 
 def assemble_hoopla(book):
   if "hoopla" in book:
     if book["hoopla"].startswith("http"):
-      return a_tag(book["hoopla"], "Hoopla")
+      return a_tag(book["hoopla"], "Hoopla", "access")
   return book.get("hoopla", "")
 
 
 def assemble_other(book):
   if "gutenberg" in book:
-    return a_tag("https://www.gutenberg.org/ebooks/{}".format(book["gutenberg"][2]), "gutenberg")
+    return a_tag("https://www.gutenberg.org/ebooks/{}".format(book["gutenberg"][2]), "gutenberg", "access")
   if "openlibrary" in book:
     return "openlibrary"
   return ""
@@ -145,7 +149,8 @@ def make_row(book, covers):
      {tags}
     </div>
     <div class="bookcontrols">
-      <span class="hide">X</span>
+      <div class="access">{access}</div>
+      <div class="hide">X</div>
     </div>
   </div>
 </div>
@@ -153,6 +158,7 @@ def make_row(book, covers):
            author=book["author"],
            url=book["url"],
            cover=book["covers"],
+           access=book["access"],
            tags=book["tags"])
 
   return """<tr>
