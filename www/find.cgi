@@ -144,6 +144,33 @@ def inject_css(account):
 th.hide, td.hide { display: none; }
 """
 
+def make_content(rows, covers):
+  if covers:
+    return """
+  <table border="1">
+    <tr>
+      <th class="hide">Hide</th>
+      <th>Cover</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Access</th>
+      <th>Tags</th>
+    </tr>
+    {rows}
+  </table>""".format(rows=rows)
+
+  return """
+  <table border="1">
+    <tr>
+      <th class="hide">Hide</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Access</th>
+      <th>Tags</th>
+    </tr>
+    {rows}
+  </table>""".format(rows=rows)
+
 def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False, covers=False):
   print("Content-Type: text/html\n")
 
@@ -210,15 +237,11 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
   count = len(rows)
   rows = "\n".join(rows)
 
-  template = "books.template.html"
-  if covers:
-    template = "covers.template.html"
-  
-  with open(template) as f:
+  with open("books.template.html") as f:
     print(f.read().format(personal_book_list=account["personal_book_list"],
                           inject_css=inject_css(account),
                           count=count,
-                          rows=rows,
+                          content=make_content(rows, covers),
                           books_json=json.dumps(embedded),
                           hidden=hidden_count,
                           errors=errors,
