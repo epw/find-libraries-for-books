@@ -61,7 +61,8 @@ TMPDIR = tempfile.TemporaryDirectory(prefix="gutenberg")
 TXT = "txt"
 PKL = "pkl"
 def gutcache(extension):
-  return os.path.join(TMPDIR.name, "gutindex." + extension)
+#  return os.path.join(TMPDIR.name, "gutindex." + extension)
+  return os.path.join("/tmp", "gutindex." + extension)
 
 def extract_title(title):
   """Parse a title that is part of a series as displayed by Goodreads."""
@@ -228,6 +229,10 @@ def gutenberg(title, author):
   pickle.dump(gutindex, open(gutcache(PKL), "wb"))
   return gutenberg(title, author)
 
+def gutenberg_cover(gut_book, thumbnail=False):
+  return "https://www.gutenberg.org/cache/epub/{n}/pg{n}.cover.{size}.jpg".format(
+    n=gut_book[2],
+    size="small" if thumbnail else "medium")
 
 # Overdrive has separate URLs for each library, but doesn't need a login to report
 # which books are available. The pages dynamically load their elements with JavaScript,
@@ -328,6 +333,7 @@ def minuteman(title, author):
         for additional_info in el.select("div.addtlInfo > a"):
           if "Instantly available on hoopla." in additional_info.stripped_strings:
             data["hoopla"] = additional_info["href"]
+            # The full URL includes "image_size=thumb", so maybe edit that to make a better "full"
             data["covers"] = {"thumbnail": {"url": "https://find.minlib.net" + cover_src},
                               "full": {"url": "https://find.minlib.net" + cover_src}}
             break
@@ -416,6 +422,8 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
   gut = gutenberg(title_parts["title"], author)
   if gut:
     book_data["gutenberg"] = gut
+    book_data["covers"] = {"thumbnail": {"url": gutenberg_cover(gut, thumbnail=True)},
+                           "full": {"url": gutenberg_cover(gut)}}
     return [book_data]
   try:
     mln_lookup = minuteman(mln_title(title_parts), author)
