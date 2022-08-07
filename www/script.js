@@ -64,6 +64,19 @@ function book_events(tr) {
   tr.querySelector("td.hide").addEventListener("click", hide_book);
 }
 
+function checkbox_to_param_bool(checkbox) {
+    if (checkbox.checked) {
+	return "1";
+    }
+    return "";
+}
+
+function change_audiobooks() {
+    const query_params = new URLSearchParams(location.search);
+    query_params.set("audiobooks", checkbox_to_param_bool(document.getElementById("audiobook")));
+    location.search = query_params;
+}
+
 function init() {
     const query_params = new URLSearchParams(location.search);
     if (query_params.get("overdrive")) {

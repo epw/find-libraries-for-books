@@ -52,7 +52,10 @@
       (The Hide column is an unfinished feature and can be ignored.)
     </p>
     <p>
-      <a href="{other_format_url}">Switch to {other_format}.</a>
+      <label>
+	<input type="checkbox" id="audiobook" onchange="change_audiobooks()" {audiobook_checked}>
+	Show audiobooks instead of ebooks
+      </label>
     </p>
   </div>
   <div>{count} books found.</div>
