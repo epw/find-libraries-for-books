@@ -99,6 +99,16 @@ def assemble_access(book):
   other = assemble_other(book)
   return ", ".join([link for link in [overdrive, hoopla, other] if link])
 
+def first(l):
+  if len(l) > 0:
+    return l[0]
+  return None
+
+def assemble_urls(book):
+  gutenberg = None
+  if "gutenberg" in book and len(book["gutenberg"]) >= 3:
+    gutenberg = "https://www.gutenberg.org/ebooks/{}".format(book["gutenberg"][2])
+  return [url for url in [book.get("overdrive_url"), book.get("hoopla"), gutenberg] if url]
 
 def assemble_tags(book):
   return ", ".join(sorted(book.get("tags", [])))
@@ -106,8 +116,7 @@ def assemble_tags(book):
 def assemble_cover(book):
   if not book.get("covers"):
     return ""
-  return a_tag(book["covers"]["full"]["href"],
-               "<img class='cover' src='{}'>".format(book["covers"]["thumbnail"]["href"]))
+  return "<img class='cover' src='{}'>".format(book["covers"]["thumbnail"]["href"])
 
 def assemble_book(book):
   return {"title": book.get("title", ""),
@@ -115,22 +124,24 @@ def assemble_book(book):
           "author": book.get("author", ""),
           "format": book.get("format", "ebook"),
           "access": assemble_access(book),
+          "url": first(assemble_urls(book)),
           "tags": assemble_tags(book)}
 
 
 def make_row(book, covers):
   if covers:
     return """<div class="book">
-<div class="cover">{cover}</div>
-<div class="details">
-  <div class="title">{title}</div>
-  <div class="author">by {author}</div>
-  <div>{access}</div>
-</div>
+  <a class="book" href="{url}">
+    <div class="cover">{cover}</div>
+    <div class="details">
+      <div class="title">{title}</div>
+      <div class="author">by {author}</div>
+    </div>
+  </a>
 </div>
 """.format(title=book["title"],
            author=book["author"],
-           access=book["access"],
+           url=book["url"],
            cover=book["covers"])
 
   return """<tr>
