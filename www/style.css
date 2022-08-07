@@ -62,6 +62,10 @@ td.hide {
     color: #aaa;
 }
 
+.hide {
+    cursor: pointer;
+}
+
 div.covertiles {
     display: flex;
     flex-wrap: wrap;
@@ -75,6 +79,8 @@ a.book {
 }
 
 div.book {
+    display: flex;
+    flex-direction: column;
     width: 175px;
     margin-bottom: 5px;
     margin-right: 5px;
@@ -91,15 +97,24 @@ div.title {
 }
 
 div.filing {
+    display: flex;
+    flex: 1; /* I don't understand this, but it makes the flexbox fill the available vertical space. */
+    flex-direction: column;
     text-align: left;
     margin-top: 5px;
     margin-bottom: 3px;
     padding-left: 10px;
+    padding-right: 10px;
 }
 
 div.tags {
     font-style: italic;
     font-size: small;
+}
+
+div.bookcontrols {
+    margin-top: auto;
+    text-align: right;
 }
 
 #errors {

@@ -144,7 +144,9 @@ def make_row(book, covers):
     <div class="tags">
      {tags}
     </div>
-    <div class="hide">X</div>
+    <div class="bookcontrols">
+      <span class="hide">X</span>
+    </div>
   </div>
 </div>
 """.format(title=book["title"],
