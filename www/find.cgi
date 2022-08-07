@@ -136,7 +136,7 @@ def make_row(book, covers):
       <div class="cover">{cover}</div>
       <div class="details">
         <div class="title">{title}</div>
-        <div class="author">by {author}</div>
+        <div class="byline">by <span class="author">{author}</span></div>
       </div>
     </div>
   </a>
@@ -169,6 +169,7 @@ def inject_css(account):
     return ""
   return """
 th.hide, td.hide { display: none; }
+div.book.hide { display: none; }
 """
 
 def make_content(rows, covers):
