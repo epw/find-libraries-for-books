@@ -107,7 +107,7 @@ def assemble_cover(book):
   if not book.get("covers"):
     return ""
   return a_tag(book["covers"]["full"]["href"],
-               "<img src='{}'>".format(book["covers"]["thumbnail"]["href"]))
+               "<img class='cover' src='{}'>".format(book["covers"]["thumbnail"]["href"]))
 
 def assemble_book(book):
   return {"title": book.get("title", ""),
@@ -119,14 +119,22 @@ def assemble_book(book):
 
 
 def make_row(book, covers):
-  html = """<tr>
-  <td class="hide"><span>X</span></td>
-"""
   if covers:
-    html += """
-  <td class="cover">{cover}</td>
-""".format(cover=book["covers"])
-  html += """
+    return """<div class="book">
+<div class="cover">{cover}</div>
+<div class="details">
+  <div class="title">{title}</div>
+  <div class="author">by {author}</div>
+  <div>{access}</div>
+</div>
+</div>
+""".format(title=book["title"],
+           author=book["author"],
+           access=book["access"],
+           cover=book["covers"])
+
+  return """<tr>
+  <td class="hide"><span>X</span></td>
   <td class="title">{title}</td>
   <td class="author">{author}</td>
   <td class="access">{access}</td>
@@ -135,7 +143,6 @@ def make_row(book, covers):
                 author=book["author"],
                 access=book["access"],
                 tags=book["tags"])
-  return html
 
 def inject_css(account):
   if account.get("hide"):
@@ -147,17 +154,9 @@ th.hide, td.hide { display: none; }
 def make_content(rows, covers):
   if covers:
     return """
-  <table border="1">
-    <tr>
-      <th class="hide">Hide</th>
-      <th>Cover</th>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Access</th>
-      <th>Tags</th>
-    </tr>
-    {rows}
-  </table>""".format(rows=rows)
+  <div class="covertiles">
+  {rows}
+  </div>""".format(rows=rows)
 
   return """
   <table border="1">

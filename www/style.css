@@ -62,6 +62,26 @@ td.hide {
     color: #aaa;
 }
 
+div.covertiles {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+div.book {
+    width: 175px;
+    margin-bottom: 10px;
+}
+
+div.cover {
+    height: 200px;
+    margin-bottom: 5px;
+}
+
+div.title {
+    font-weight: bold;
+}
+
 #errors {
     color: red;
     margin: 10px 0;
