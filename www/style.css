@@ -90,6 +90,18 @@ div.title {
     font-weight: bold;
 }
 
+div.filing {
+    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    padding-left: 10px;
+}
+
+div.tags {
+    font-style: italic;
+    font-size: small;
+}
+
 #errors {
     color: red;
     margin: 10px 0;

@@ -22,6 +22,8 @@ function download_books() {
     books_json, "table.csv");
 }
 
+// This is now either a <tr> tag or a <div class="book"> tag,
+// depending on whether the view is a table or cover tiles.
 async function record_hide_book(tr) {
   const params = new URLSearchParams(location.search);
   if (params.get("daily") != "1") {
@@ -47,7 +49,7 @@ async function record_hide_book(tr) {
   return (response.status == 200);
 }
 
-function hide_book(e) {
+function hide_book_table(e) {
   for (let el of e.path) {
     if (el.tagName == "TR") {
       record_hide_book(el);
@@ -57,11 +59,28 @@ function hide_book(e) {
   }
 }
 
-function book_events(tr) {
+function book_events_table(tr) {
   if (!tr.querySelector("td")) {
     return;
   }
-  tr.querySelector("td.hide").addEventListener("click", hide_book);
+  tr.querySelector("td.hide").addEventListener("click", hide_book_table);
+}
+
+function hide_book_covers(e) {
+  for (let el of e.path) {
+    if (el.tagName == "DIV" && el.classList.contains("book")) {
+      record_hide_book(el);
+      el.parentElement.removeChild(el);
+      break;
+    }
+  }
+}
+
+function book_events_covers(div) {
+  const hide_el = div.querySelector(".hide");
+  if (hide_el) {
+    hide_el.addEventListener("click", hide_book_covers);
+  }
 }
 
 function checkbox_to_param_bool(checkbox) {
@@ -88,7 +107,13 @@ function init() {
 	document.getElementById("overdrive").value = query_params.get("overdrive");
     }
 
-    Array.from(document.querySelectorAll("tr")).map(book_events);
+    let book_selector = "tr";
+    let book_events = book_events_table;
+    if (query_params.get("covers")) {
+	book_selector = "div.book";
+	book_events = book_events_covers;
+    }
+    Array.from(document.querySelectorAll(book_selector)).map(book_events);
 }
 
 init();

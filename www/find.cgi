@@ -132,17 +132,26 @@ def make_row(book, covers):
   if covers:
     return """<div class="book">
   <a class="book" href="{url}">
-    <div class="cover">{cover}</div>
-    <div class="details">
-      <div class="title">{title}</div>
-      <div class="author">by {author}</div>
+    <div>
+      <div class="cover">{cover}</div>
+      <div class="details">
+        <div class="title">{title}</div>
+        <div class="author">by {author}</div>
+      </div>
     </div>
   </a>
+  <div class="filing">
+    <div class="tags">
+     {tags}
+    </div>
+    <div class="hide">X</div>
+  </div>
 </div>
 """.format(title=book["title"],
            author=book["author"],
            url=book["url"],
-           cover=book["covers"])
+           cover=book["covers"],
+           tags=book["tags"])
 
   return """<tr>
   <td class="hide"><span>X</span></td>
