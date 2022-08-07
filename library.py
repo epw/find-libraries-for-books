@@ -324,9 +324,12 @@ def minuteman(title, author):
     if item_type == "EBOOK":
       if "at Hoopla" in el.stripped_strings:
         data["hoopla"] = True
+        cover_src = el.select("div.itemBookCover > a > img")[0]["src"]
         for additional_info in el.select("div.addtlInfo > a"):
           if "Instantly available on hoopla." in additional_info.stripped_strings:
             data["hoopla"] = additional_info["href"]
+            data["covers"] = {"thumbnail": {"url": "https://find.minlib.net" + cover_src},
+                              "full": {"url": "https://find.minlib.net" + cover_src}}
             break
   return data
 
@@ -418,6 +421,8 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
     mln_lookup = minuteman(mln_title(title_parts), author)
     if mln_lookup["hoopla"]:
       book_data["hoopla"] = mln_lookup["hoopla"]
+      if "covers" in mln_lookup:
+        book_data["covers"] = mln_lookup["covers"]
       return [book_data]
   except requests.exceptions.HTTPError as e:
     sys.stderr.write(str(e))
