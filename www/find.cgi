@@ -120,7 +120,9 @@ def assemble_tags(book):
 def assemble_cover(book):
   if not book.get("covers"):
     return ""
-  return "<img class='cover' src='{}'>".format(book["covers"]["thumbnail"]["href"])
+  thumb = book["covers"]["thumbnail"]
+  url = thumb.get("url") or thumb.get("href") or ""
+  return "<img class='cover' src='{}'>".format(url)
 
 def assemble_book(book):
   return {"title": book.get("title", ""),
