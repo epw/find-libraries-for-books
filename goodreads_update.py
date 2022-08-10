@@ -77,7 +77,6 @@ def save_books(books, filename):
 def main():
   rss = get_rss(URL)
   books = load_books(TO_READ)
-  print(len(books))
   update_books(books, rss)
   save_books(books, TO_READ)
 
