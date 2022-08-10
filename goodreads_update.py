@@ -1,5 +1,21 @@
 #! /usr/bin/env python3
 
+# This reads from a Goodreads RSS feed for a shelf, and prepends any new books
+# found onto the file of books to check every night. This finally frees us from
+# having to periodically use the rather slow Goodreads export function to get
+# new books to read. It tries to keep as close as possible to the format of the
+# Goodreads export, so that if the export is repeated, it can simply overwrite
+# the added-to file, and the effects should be negligible.
+
+# Right now, this is not written in a remotely portable way; it references files
+# in my own directories on my private server. Edit URL and TO_READ for use.
+
+# Note this destructively overwrites TO_READ, because it needs to insert new CSV
+# rows starting at line 2. It's always a good idea to keep a backup of TO_READ
+# because if the program crashes in the middle, it could have been deleted and
+# not yet re-filled. Of course, simply repeating a Goodreads export should also
+# recover it.
+
 import csv
 import feedparser
 from pathlib import Path
@@ -16,9 +32,8 @@ def load_books(filename):
     reader = csv.DictReader(f)
     return list(reader)
 
-# This falls prey to "Lies Programmers Believe About Names",
-# but the RSS feed doesn't have the field so I'm stuck with it
-# for now.
+# This falls prey to "Lies Programmers Believe About Names", but the RSS feed
+# doesn't have the field so I'm stuck with it for now.
 def name_last_first(name):
   parts = name.split()
   return parts[-1] + ", " + " ".join(parts[:-1])
