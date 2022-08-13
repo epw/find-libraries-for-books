@@ -76,9 +76,14 @@ def rss_to_csv(e):
 def update_books(books, rss):
   book_hash = {book["Book Id"]: book for book in books}
   for entry in reversed(rss.entries):
-    if entry["book_id"] not in book_hash:
+    row = rss_to_csv(entry)
+    if entry["book_id"] in book_hash:
+      book = books[books.index(book_hash[entry["book_id"]])]
+      if book["Bookshelves"] != entry["user_shelves"]:
+        print("Updating shelves for {}".format(entry["title"]))
+        book["Bookshelves"] = entry["user_shelves"]
+    else:
       print("Adding {}".format(entry["title"]))
-      row = rss_to_csv(entry)
       books.insert(0, row)
       book_hash[row["Book Id"]] = row
 
