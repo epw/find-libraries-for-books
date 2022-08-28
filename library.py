@@ -448,7 +448,7 @@ def find_book(full_title, author, bookshelves=None, overdrive_subdomains=OVERDRI
           data["format"] = book["format"]
           data["covers"] = book.get("covers", None)
           books.append(data)
-        return books
+      return books
     except requests.exceptions.HTTPError as e:
       sys.stderr.write(str(e))
   try:

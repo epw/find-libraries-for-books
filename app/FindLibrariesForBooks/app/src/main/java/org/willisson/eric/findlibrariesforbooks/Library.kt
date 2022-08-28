@@ -105,5 +105,21 @@ class Library {
             }
             return listOf(book_data)
         }
+
+	for (subdomain in OVERDRIVE_SUBDOMAINS) {
+	    val overdrive_lookups = overdrive(subdomain, overdrive_title(title_parts), author)
+	    val books = listOf()
+	    for (book in overdrive_lookups) {
+		if (book.available) {
+		    val data = book_data.copy()
+		    data.overdrive = subdomain
+		    data.overdrive_url = book.url
+		    data.format = book.format
+		    data.covers = book.covers
+		    books.add(data)
+		}
+	    }
+	    return books
+	}
     }
 }
