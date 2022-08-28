@@ -29,7 +29,7 @@ textarea {
   color: white;
 }
 
-button, input[type="submit"], input[type="text"] {
+button, input[type="submit"], input[type="text"], select {
     background-color: #333;
     color: white;
 }
@@ -121,6 +121,10 @@ div.bookcontrols {
 div.bookcontrols a.access {
     font-size: small;
     text-decoration: none;
+}
+
+.filtering .book {
+    display: none;
 }
 
 #errors {

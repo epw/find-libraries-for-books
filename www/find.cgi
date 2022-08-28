@@ -117,6 +117,9 @@ def assemble_urls(book):
 def assemble_tags(book):
   return ", ".join(sorted(book.get("tags", [])))
 
+def assemble_filter_tags(tags):
+  return "\n".join([f"<option>{tag}</option>" for tag in ["(none)"] + sorted(tags)])
+
 def assemble_cover(book):
   if not book.get("covers"):
     return ""
@@ -186,12 +189,12 @@ div.book.hide { display: none; }
 def make_content(rows, covers):
   if covers:
     return """
-  <div class="covertiles">
+  <div id="books" class="covertiles">
   {rows}
   </div>""".format(rows=rows)
 
   return """
-  <table border="1">
+  <table id="books" border="1">
     <tr>
       <th class="hide">Hide</th>
       <th>Title</th>
@@ -244,6 +247,7 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
 
   books = []
   embedded = []
+  filter_tags = set()
   hidden_count = 0
   for book in book_data:
     assembled = assemble_book(book)
@@ -263,16 +267,20 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
       if hidden_book:
         continue
     embedded.append(assembled)
+    filter_tags.update(book["tags"])
     books.append((assembled, covers))
   books.sort(key=lambda book: not book[0]["starred"]) # "not" works to put starred books first without disturbing other ordering
   rows = [make_row(book[0], book[1]) for book in books]
   count = len(rows)
   rows = "\n".join(rows)
 
+  filter_tags = assemble_filter_tags(filter_tags)
+  
   with open("books.template.html") as f:
     print(f.read().format(personal_book_list=account["personal_book_list"],
                           inject_css=inject_css(account),
                           count=count,
+                          filters=filter_tags,
                           content=make_content(rows, covers),
                           books_json=json.dumps(embedded),
                           hidden=hidden_count,

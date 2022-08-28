@@ -101,6 +101,16 @@ function change_covers() {
     location.search = query_params;
 }
 
+function change_filters() {
+    const select = document.getElementById("filter");
+    const books = document.getElementById("books");
+    if (select.value == "(none)") {
+	books.classList.remove("filtering");
+    } else {
+	books.classList.add("filtering");
+    }
+}
+
 function init() {
     const query_params = new URLSearchParams(location.search);
     if (query_params.get("overdrive")) {

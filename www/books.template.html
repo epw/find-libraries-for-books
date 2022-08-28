@@ -66,7 +66,17 @@
       </div>
     </p>
   </div>
-  <div>{count} books found.</div>
+  <div>
+    <span>{count} books found.</span>
+    <span>
+      <label>
+	Filter to:
+	<select id="filter" onchange="change_filters()">
+	  {filters}
+	</select>
+      </label>
+    </span>
+  </div>
   <div id="errors">{errors}</div>
   {content}
   <p>
