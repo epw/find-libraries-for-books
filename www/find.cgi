@@ -167,7 +167,7 @@ def make_row(book, covers):
            access=book["access"],
            tags=book["tags"])
 
-  return """<tr data-tags="{tags}">
+  return """<tr class="book" data-tags="{tags}">
   <td class="hide"><span>X</span></td>
   <td class="title">{title}</td>
   <td class="author">{author}</td>

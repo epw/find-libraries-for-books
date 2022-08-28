@@ -123,9 +123,10 @@ div.bookcontrols a.access {
     text-decoration: none;
 }
 
-.filtering .book {
+.filtering tr.book, .filtering div.book {
     display: none;
 }
+
 
 #errors {
     color: red;

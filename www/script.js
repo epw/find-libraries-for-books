@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let filterCSS;
+
 function example_data() {
   const books = document.getElementById("books");
   books.value = document.getElementById("example").textContent;
@@ -108,7 +110,18 @@ function change_filters() {
 	books.classList.remove("filtering");
     } else {
 	books.classList.add("filtering");
+	while (filterCSS.rules.length > 0) {
+	    filterCSS.deleteRule(0);
+	}
+	filterCSS.insertRule(`.filtering tr.book[data-tags*="${select.value}"] { display: table-row; }`, 0);
+	filterCSS.insertRule(`.filtering div.book[data-tags*="${select.value}"] { display: block; }`, 0);
     }
+}
+
+function make_filter_css() {
+    const style = document.createElement("style");
+    document.head.appendChild(style);
+    filterCSS = document.styleSheets[document.styleSheets.length-1];
 }
 
 function init() {
@@ -124,6 +137,8 @@ function init() {
 	book_events = book_events_covers;
     }
     Array.from(document.querySelectorAll(book_selector)).map(book_events);
+
+    make_filter_css();
 }
 
 init();
