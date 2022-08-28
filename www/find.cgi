@@ -131,7 +131,8 @@ def assemble_book(book):
           "format": book.get("format", "ebook"),
           "access": assemble_access(book),
           "url": first(assemble_urls(book)),
-          "tags": assemble_tags(book)}
+          "tags": assemble_tags(book),
+          "starred": "starred" in book.get("tags", [])}
 
 
 def make_row(book, covers):
@@ -241,8 +242,8 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
   except:
     raise
 
+  books = []
   embedded = []
-  rows = []
   hidden_count = 0
   for book in book_data:
     assembled = assemble_book(book)
@@ -262,7 +263,9 @@ def page(books, csvfile, overdrive, daily=False, account=None, audiobooks=False,
       if hidden_book:
         continue
     embedded.append(assembled)
-    rows.append(make_row(assembled, covers))
+    books.append((assembled, covers))
+  books.sort(key=lambda book: not book[0]["starred"]) # "not" works to put starred books first without disturbing other ordering
+  rows = [make_row(book[0], book[1]) for book in books]
   count = len(rows)
   rows = "\n".join(rows)
 
