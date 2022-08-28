@@ -108,14 +108,15 @@ function change_filters() {
     const books = document.getElementById("books");
     if (select.value == "(none)") {
 	books.classList.remove("filtering");
-    } else {
-	books.classList.add("filtering");
-	while (filterCSS.rules.length > 0) {
-	    filterCSS.deleteRule(0);
-	}
-	filterCSS.insertRule(`.filtering tr.book[data-tags*="${select.value}"] { display: table-row; }`, 0);
-	filterCSS.insertRule(`.filtering div.book[data-tags*="${select.value}"] { display: block; }`, 0);
+	return;
     }
+    
+    books.classList.add("filtering");
+    while (filterCSS.rules.length > 0) {
+	filterCSS.deleteRule(0);
+    }
+    filterCSS.insertRule(`.filtering tr.book[data-tags*="${select.value}"] { display: table-row; }`, 0);
+    filterCSS.insertRule(`.filtering div.book[data-tags*="${select.value}"] { display: block; }`, 0);
 }
 
 function make_filter_css() {
