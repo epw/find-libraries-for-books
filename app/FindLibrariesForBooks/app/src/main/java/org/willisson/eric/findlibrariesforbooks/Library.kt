@@ -5,9 +5,15 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.net.URLEncoder
 import kotlin.text.Regex
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+
+@Serializable
+data class OverdriveBook(val title: String, val isAvailable: bool, val type, val covers)
 
 class Library {
     val OVERDRIVE_SUBDOMAINS = listOf("minuteman", "bpl")
@@ -36,6 +42,46 @@ class Library {
         return title_parts.title
     }
 
+    private fun overdrive_title(title_parts) {
+        return title_parts.title
+    }
+    private fun overdrive_covers(covers) {
+        keys = covers.toSortedList(compareBy<int> { Regex.fromLiteral("""cover(\d+)Wide""").find(cover)?.group(0)?.toInt() }
+        if (!keys) {
+            return null
+        }
+        return object {
+            val thumbnail: covers[keys[0]],
+            val full: covers[keys[-1]]
+        }
+    }
+    
+    private fun overdrive(subdomain, title, author) {
+        val doc = Jsoup.connect("https://$subdomain.overdrive.com/search?query=$title&creator=$author&sortBy=relevance").get()
+        val media_items = Json.decodeFromString<OverdriveBook>(doc.substring(doc.indexOf("window.OverDrive.mediaItems = ")))
+        val book_data = object {
+            val available: false,
+            val format: "ebook"
+        }
+        val books = listOf()
+        for (key in media_items) {
+            val item = media_items[key]
+            if (item.title == title and item.isAvailable) {
+                val book = book_data.copy()
+                if (item.type.name == "eBook") {
+                    book.available = true
+                } else if (item.type.name = "Audiobook") {
+                    book.available = true
+                    book.format = "audiobook"
+                }
+                book.url = "https://$subdomain.overdrive.com/media/$key"
+                book.covers = overdrive_covers(item.covers)
+                books.add(book)
+            }
+        }
+        return books
+    }
+    
     /** Read from Minuteman to extract Hoopla availability.
 
     Minuteman is nice enough to have a "Availble at Hoopla" annotation on the book results,
@@ -45,30 +91,30 @@ class Library {
         val data = object {
             val hoopla: false
         }
-	val doc: Document = Jsoup.connect(URLEncoder.encode("https://find.minlib.net/iii/encore/search/C__St:($title) a:($author)__Orightresult__U?lang=eng&suite=cobalt&fromMain=yes")).get()
-	for (el in doc.select("div.searchResult")) {
-	    val item_type = el.select("div.recordDetailValue > span.itemMediaDescription")[0].text().trim()
-	    when (item_type) {
-		"EBOOK" -> {
-		    if ("at Hoopla" in el.text()) {
-			data.hoopla = true
-			val cover_src = el.select("div.itemBookCover > a > img")[0].attr("src")
-			for (additional_info in el.select("div.addtlInfo > a") {
-			    if ("Instantly available on hoopla." in additional_info.text()) {
-				data.hoopla = additional_info.attr("href")
-				// The full URL includes "image_size=thumb", so maybe edit that to make a better "full"
-				data.covers = object {
-				    val thumbnail: object {url: "https://find.minlib.net" + cover_src},
-				    val full: object {url: "https://find.minlib.net" + cover_src}
-				}
-				break
-			    }
-			}
-		    }
-		}
-	    }
-	}
-	return data
+        val doc: Document = Jsoup.connect(URLEncoder.encode("https://find.minlib.net/iii/encore/search/C__St:($title) a:($author)__Orightresult__U?lang=eng&suite=cobalt&fromMain=yes")).get()
+        for (el in doc.select("div.searchResult")) {
+            val item_type = el.select("div.recordDetailValue > span.itemMediaDescription")[0].text().trim()
+            when (item_type) {
+                "EBOOK" -> {
+                    if ("at Hoopla" in el.text()) {
+                        data.hoopla = true
+                        val cover_src = el.select("div.itemBookCover > a > img")[0].attr("src")
+                        for (additional_info in el.select("div.addtlInfo > a") {
+                            if ("Instantly available on hoopla." in additional_info.text()) {
+                                data.hoopla = additional_info.attr("href")
+                                // The full URL includes "image_size=thumb", so maybe edit that to make a better "full"
+                                data.covers = object {
+                                    val thumbnail: object {url: "https://find.minlib.net" + cover_src},
+                                    val full: object {url: "https://find.minlib.net" + cover_src}
+                                }
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return data
     }
 
     private gutenberg(title, author) {
@@ -106,20 +152,22 @@ class Library {
             return listOf(book_data)
         }
 
-	for (subdomain in OVERDRIVE_SUBDOMAINS) {
-	    val overdrive_lookups = overdrive(subdomain, overdrive_title(title_parts), author)
-	    val books = listOf()
-	    for (book in overdrive_lookups) {
-		if (book.available) {
-		    val data = book_data.copy()
-		    data.overdrive = subdomain
-		    data.overdrive_url = book.url
-		    data.format = book.format
-		    data.covers = book.covers
-		    books.add(data)
-		}
-	    }
-	    return books
-	}
+        for (subdomain in OVERDRIVE_SUBDOMAINS) {
+            val overdrive_lookups = overdrive(subdomain, overdrive_title(title_parts), author)
+            val books = listOf()
+            for (book in overdrive_lookups) {
+                if (book.available) {
+                    val data = book_data.copy()
+                    data.overdrive = subdomain
+                    data.overdrive_url = book.url
+                    data.format = book.format
+                    data.covers = book.covers
+                    books.add(data)
+                }
+            }
+            return books
+        }
+
+        return listOf(book_data)
     }
 }
