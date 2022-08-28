@@ -137,7 +137,7 @@ def assemble_book(book):
 
 def make_row(book, covers):
   if covers:
-    return """<div class="book">
+    return """<div class="book" data-tags="{tags}">
   <a class="book" href="{url}">
     <div>
       <div class="cover">{cover}</div>
@@ -164,7 +164,7 @@ def make_row(book, covers):
            access=book["access"],
            tags=book["tags"])
 
-  return """<tr>
+  return """<tr data-tags="{tags}">
   <td class="hide"><span>X</span></td>
   <td class="title">{title}</td>
   <td class="author">{author}</td>
