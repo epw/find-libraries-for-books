@@ -292,7 +292,7 @@ def overdrive(subdomain, title, author):
   books = []
   for key in media_items:
     item = media_items[key]
-    if titles_match(title, item["title"], item["subtitle"]) and item["isAvailable"]:
+    if titles_match(title, item["title"], item.get("subtitle", "")) and item["isAvailable"]:
       book = book_data.copy()
       if item["type"]["name"] == "eBook":
         book["available"] = True
