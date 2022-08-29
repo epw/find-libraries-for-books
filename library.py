@@ -243,6 +243,17 @@ def gutenberg_cover(gut_book, thumbnail=False):
 def overdrive_title(title_parts):
   return title_parts["title"]
 
+def titles_match(searching_title, item_title, item_subtitle=""):
+  """Fuzzy title matching, inspired by Caste: The Origin of our Discontent."""
+  if searching_title == item_title:
+    return True
+  if searching_title.find(":") == -1:
+    return False # Give up, we only have ideas for books with subtitles after colons
+  searching_maintitle, searching_subtitle = [s.strip() for s in searching_title.split(":", 1)]
+  if item_title.find(searching_maintitle) == 0 and item_subtitle.find(searching_subtitle) == 0:
+    return True
+  return False
+
 def group_or_zero(regex):
   if not regex:
     return 0
@@ -281,7 +292,7 @@ def overdrive(subdomain, title, author):
   books = []
   for key in media_items:
     item = media_items[key]
-    if item["title"] == title and item["isAvailable"]:
+    if titles_match(title, item["title"], item["subtitle"]) and item["isAvailable"]:
       book = book_data.copy()
       if item["type"]["name"] == "eBook":
         book["available"] = True
