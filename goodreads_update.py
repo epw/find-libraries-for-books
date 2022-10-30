@@ -20,6 +20,7 @@ import csv
 import feedparser
 from pathlib import Path
 import os
+import sys
 
 URL = open("private/eric_goodreads.rss").read().strip()
 TO_READ = os.path.join(Path.home(), "to_read.csv")
@@ -28,6 +29,8 @@ def get_rss(url):
   return feedparser.parse(url)
 
 def load_books(filename):
+  if not os.path.exists(filename):
+    return []
   with open(filename) as f:
     reader = csv.DictReader(f)
     return list(reader)
@@ -95,10 +98,19 @@ def save_books(books, filename):
       writer.writerow(book)
 
 def main():
-  rss = get_rss(URL)
-  books = load_books(TO_READ)
+  to_read = TO_READ
+  url = URL
+  if len(sys.argv) > 1:
+    if len(sys.argv) < 3:
+      print(f"Usage: {sys.argv[0]} <to_read.csv path> <Goodreads RSS URL>")
+      exit()
+    to_read = sys.argv[1]
+    url = sys.argv[2]
+
+  rss = get_rss(url)
+  books = load_books(to_read)
   update_books(books, rss)
-  save_books(books, TO_READ)
+  save_books(books, to_read)
 
 if __name__ == "__main__":
   main()
