@@ -108,6 +108,7 @@ function change_filters() {
     const books = document.getElementById("books");
     if (select.value == "(none)") {
 	books.classList.remove("filtering");
+	document.getElementById("bookcount").textContent = document.querySelectorAll("#books tr.book, #books div.book").length;
 	return;
     }
     
@@ -115,8 +116,12 @@ function change_filters() {
     while (filterCSS.rules.length > 0) {
 	filterCSS.deleteRule(0);
     }
-    filterCSS.insertRule(`.filtering tr.book[data-tags*="${select.value}"] { display: table-row; }`, 0);
-    filterCSS.insertRule(`.filtering div.book[data-tags*="${select.value}"] { display: block; }`, 0);
+    const row_selector = `data-tags*="${select.value}"`;
+    filterCSS.insertRule(`.filtering tr.book[${row_selector}] { display: table-row; }`, 0);
+    filterCSS.insertRule(`.filtering div.book[${row_selector}] { display: block; }`, 0);
+
+    const count = document.querySelectorAll(`#books .book[${row_selector}]`).length;
+    document.getElementById("bookcount").textContent = count;
 }
 
 function make_filter_css() {
